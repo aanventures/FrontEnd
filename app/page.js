@@ -63,7 +63,7 @@ export default function Home() {
             <div className="p-4">
               <h3 className="font-semibold text-lg">Kelingking Beach</h3>
               <p className="text-sm text-gray-500">Nusa Penida, Indonesia</p>
-              <p className="mt-2 font-bold text-blue-600">$224 / Person</p>
+              <p className="mt-2 font-bold text-blue-600">₹224 / Person</p>
             </div>
           </div>
 
@@ -79,7 +79,7 @@ export default function Home() {
             <div className="p-4">
               <h3 className="font-semibold text-lg">Interlaken House</h3>
               <p className="text-sm text-gray-500">Bern, Switzerland</p>
-              <p className="mt-2 font-bold text-blue-600">$224 / Person</p>
+              <p className="mt-2 font-bold text-blue-600">₹224 / Person</p>
             </div>
           </div>
 
@@ -95,7 +95,7 @@ export default function Home() {
             <div className="p-4">
               <h3 className="font-semibold text-lg">Spruce Mountain</h3>
               <p className="text-sm text-gray-500">West Virginia, US</p>
-              <p className="mt-2 font-bold text-blue-600">$224 / Person</p>
+              <p className="mt-2 font-bold text-blue-600">₹224 / Person</p>
             </div>
           </div>
 
