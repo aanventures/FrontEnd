@@ -95,15 +95,15 @@ export default function Footer() {
             <div className="space-y-4 text-sm">
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="text-orange-600 shrink-0" />
-                <span>123 Travel Lane, Bengaluru,<br />Karnataka 560001</span>
+                <span>123 Bengaluru,<br />Karnataka </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={18} className="text-orange-600 shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>+91 9999999999</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail size={18} className="text-orange-600 shrink-0" />
-                <span>support@seashi.com</span>
+                <span>support@tripaango.com</span>
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default function Footer() {
         {/* Bottom Section: Copyright */}
         <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs font-medium text-slate-500">
-            © {currentYear} Seashi. All rights reserved. Developed for Property Management.
+            © {currentYear} tripaango.com. All rights reserved. Developed for Property Management.
           </p>
           <div className="flex gap-6">
             <Link href="/privacy" className="text-xs hover:text-white transition-colors">Privacy</Link>

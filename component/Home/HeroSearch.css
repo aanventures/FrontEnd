@@ -1,0 +1,77 @@
+.react-datepicker-popper {
+  z-index: 9999 !important;
+  padding-top: 15px !important;
+}
+.react-datepicker {
+  display: flex !important; /* Forces months to align horizontally */
+  border: none !important;
+  border-radius: 2rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.25) !important;
+  background: white !important;
+}
+.react-datepicker__navigation {
+  top: 1.5rem !important;
+}
+.react-datepicker__month-container {
+  float: none !important;
+  padding: 0 1rem !important;
+}
+.react-datepicker__header {
+  background: white !important;
+  border: none !important;
+}
+.react-datepicker__day-name {
+  font-weight: 800 !important;
+  color: #cbd5e1 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+}
+.react-datepicker__day {
+  font-weight: 600 !important;
+  border-radius: 0.75rem !important;
+  padding: 0.4rem !important;
+}
+.react-datepicker__day--in-range {
+  background-color: #f8fafc !important;
+  color: #000 !important;
+  border-radius: 0 !important;
+}
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end {
+  background-color: #ea580c !important; /* Matches orange theme */
+  color: white !important;
+  border-radius: 0.75rem !important;
+}
+
+/* The background color for all dates inside the selected range */
+.react-datepicker__day--in-range {
+  background-color: #fff7ed !important; /* soft orange background */
+  color: #ea580c !important; /* orange text */
+  border-radius: 0 !important;
+}
+
+/* The specific start and end dates of the range */
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end {
+  background-color: #ea580c !important; /* Solid orange */
+  color: white !important;
+  border-radius: 0.5rem !important; /* Makes the edges rounded */
+}
+
+/* Optional: styling the "in-selecting-range" (when hovering before clicking) */
+.react-datepicker__day--in-selecting-range {
+  background-color: #ffedd5 !important;
+  color: #9a3412 !important;
+}
+
+/* Fix for the horizontal 2-month view display */
+.react-datepicker {
+  display: flex !important;
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.react-datepicker__month-container {
+  float: none !important;
+}

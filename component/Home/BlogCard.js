@@ -5,7 +5,7 @@ export default function BlogCard() {
   // const post = await getLatestPost();
 
   return (
-    <div className="relative w-full max-w-md group">
+    <div className="relative w-full group">
       <div className="absolute -inset-4 bg-gradient-to-tr from-orange-100 to-blue-50 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-80 transition duration-1000"></div>
       <div className="relative bg-white rounded-[2.5rem] shadow-lg overflow-hidden border border-white transform transition duration-500 hover:-translate-y-2">
         <div className="relative h-64 w-full">
