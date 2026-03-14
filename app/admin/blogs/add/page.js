@@ -1,14 +1,16 @@
 "use client";
 import { useState } from "react";
-import { Save, Image as ImageIcon, X, Globe, Lock } from "lucide-react";
+import { Save, Image as ImageIcon, Globe, Loader2 } from "lucide-react";
+import QuillEditor from "@/component/admin/Blogs/QuillEditor";
 
 export default function AddBlogPage() {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
     content: "",
     category: "travel",
-    status: "draft",
+    status: "published",
     author: "Admin",
   });
 
@@ -20,15 +22,56 @@ export default function AddBlogPage() {
     { id: "deals", label: "Exclusive Deals" },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Saving Blog Data:", formData);
-    alert("Blog saved successfully!");
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    // 1. Validation
+    if (
+      !formData.title ||
+      !formData.content ||
+      formData.content === "<p></p>"
+    ) {
+      alert("Title and Content are required!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/blogs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Blog Saved Successfully!");
+        // 2. Reset the form state
+        setFormData({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "travel",
+          status: "published",
+          author: "Admin",
+        });
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Connection to backend failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header Area */}
+    <div className="max-w-6xl mx-auto space-y-6 p-6 font-sans">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">
@@ -39,23 +82,27 @@ export default function AddBlogPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">
-            Save Draft
-          </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all flex items-center gap-2"
+            disabled={loading}
+            className="px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all flex items-center gap-2 disabled:opacity-70"
           >
-            <Save size={18} /> Publish Post
+            {loading ? (
+              <Loader2 className="animate-spin" size={18} />
+            ) : (
+              <Save size={18} />
+            )}
+            {loading ? "Publishing..." : "Publish Post"}
           </button>
         </div>
       </div>
 
-      <form className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content (Left Column) */}
+      <form
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        onSubmit={handleSubmit}
+      >
         <div className="lg:col-span-2 space-y-6">
-          {/* Title Field */}
-          <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-4">
+          <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
             <div>
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
                 Blog Title *
@@ -72,7 +119,6 @@ export default function AddBlogPage() {
               />
             </div>
 
-            {/* Excerpt Field */}
             <div>
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
                 Short Excerpt *
@@ -80,8 +126,8 @@ export default function AddBlogPage() {
               <textarea
                 required
                 rows="2"
-                placeholder="A brief summary for the card view..."
-                className="w-full mt-2 p-4 bg-slate-50 rounded-2xl border border-slate-100 focus:outline-none focus:ring-2 focus:ring-orange-500/10 text-slate-600"
+                placeholder="A brief summary..."
+                className="w-full mt-2 p-4 bg-slate-50 rounded-2xl border border-slate-100 focus:outline-none text-slate-600"
                 value={formData.excerpt}
                 onChange={(e) =>
                   setFormData({ ...formData, excerpt: e.target.value })
@@ -89,31 +135,22 @@ export default function AddBlogPage() {
               />
             </div>
 
-            {/* Content Body */}
             <div>
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
                 Main Content *
               </label>
-              <textarea
-                required
-                rows="12"
-                placeholder="Start writing your story here..."
-                className="w-full mt-2 p-4 bg-slate-50 rounded-2xl border border-slate-100 focus:outline-none focus:ring-2 focus:ring-orange-500/10 text-slate-700 leading-relaxed"
+              <QuillEditor
                 value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
+                onChange={(content) => setFormData({ ...formData, content })}
               />
             </div>
           </div>
         </div>
 
-        {/* Sidebar Settings (Right Column) */}
         <div className="space-y-6">
-          {/* CATEGORY SELECTOR (The field you requested) */}
           <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
             <label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-4">
-              Blog Type / Category
+              Category
             </label>
             <div className="space-y-2">
               {categories.map((cat) => (
@@ -136,46 +173,31 @@ export default function AddBlogPage() {
             </div>
           </div>
 
-          {/* Featured Image Upload Placeholder */}
-          <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-4">
-              Featured Image
-            </label>
-            <div className="aspect-video bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 group cursor-pointer hover:bg-slate-100 transition-colors">
-              <ImageIcon
-                size={32}
-                className="group-hover:scale-110 transition-transform"
-              />
-              <span className="text-[10px] font-bold mt-2 uppercase">
-                Upload JPG/PNG
-              </span>
-            </div>
-          </div>
-
-          {/* Post Settings */}
           <div className="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-white">
             <h4 className="text-sm font-bold mb-4 flex items-center gap-2">
               <Globe size={16} className="text-orange-500" /> Visibility
               Settings
             </h4>
             <div className="space-y-4">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  className="accent-orange-500"
-                  defaultChecked
-                />
-                <span className="text-sm font-medium">Public (Live)</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  className="accent-orange-500"
-                />
-                <span className="text-sm font-medium">Private / Draft</span>
-              </label>
+              {["published", "draft"].map((status) => (
+                <label
+                  key={status}
+                  className="flex items-center gap-3 cursor-pointer capitalize"
+                >
+                  <input
+                    type="radio"
+                    name="status"
+                    checked={formData.status === status}
+                    onChange={() => setFormData({ ...formData, status })}
+                    className="accent-orange-500"
+                  />
+                  <span className="text-sm font-medium">
+                    {status === "published"
+                      ? "Public (Live)"
+                      : "Private / Draft"}
+                  </span>
+                </label>
+              ))}
             </div>
           </div>
         </div>

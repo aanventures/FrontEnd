@@ -1,55 +1,77 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { authenticateUser, clearErrors } from "@/store/authSlice";
 
 export default function LoginForm() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  
+  // Get state from Redux
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
   const [loginMethod, setLoginMethod] = useState("email");
   const [showOtp, setShowOtp] = useState(false);
   
-  // State for API data
+  // Input states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [loading, setLoading] = useState(false);
+
+  // Redirect if successfully logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, router]);
 
   const handleOtpChange = (value, index) => {
+    if (isNaN(value)) return; // Only allow numbers
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-    if (value && index < 3) document.getElementById(`otp-${index + 1}`).focus();
+    if (value && index < 3) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // First step: Toggle OTP fields
-    if (!showOtp) {
-      setShowOtp(true);
-      return;
-    }
+    dispatch(clearErrors());
 
-    // Second step: Call API
-    setLoading(true);
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/login-mobile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mobile: mobile,
-          otp: otp.join(""),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        alert("Login Successful!");
-      } else {
-        alert(data.message);
+    // Flow for Mobile Login
+    if (loginMethod === "mobile") {
+      if (!showOtp) {
+        // Validation for Indian mobile numbers
+        if (!/^[6-9]\d{9}$/.test(mobile)) {
+          alert("Please enter a valid 10-digit mobile number");
+          return;
+        }
+        setShowOtp(true);
+        return;
       }
-    } catch (err) {
-      alert("Server Connection Failed");
-    } finally {
-      setLoading(false);
+
+      // Prepare credentials for Mobile
+      const credentials = {
+        mobile: mobile,
+        otp: otp.join(""),
+      };
+      dispatch(authenticateUser(credentials));
+    } 
+    // Flow for Email Login
+    else {
+      if (!email || !password) {
+        alert("Please enter both email and password");
+        return;
+      }
+      const credentials = {
+        email: email,
+        password: password,
+      };
+      dispatch(authenticateUser(credentials));
     }
   };
 
@@ -61,19 +83,45 @@ export default function LoginForm() {
       </div>
 
       <div className="flex bg-slate-100 p-1 rounded-2xl mb-6">
-        <button onClick={() => { setLoginMethod("email"); setShowOtp(false); }} className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${loginMethod === "email" ? "bg-white text-orange-600 shadow-sm" : "text-slate-500"}`}>
+        <button 
+          type="button"
+          onClick={() => { setLoginMethod("email"); setShowOtp(false); dispatch(clearErrors()); }} 
+          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${loginMethod === "email" ? "bg-white text-orange-600 shadow-sm" : "text-slate-500"}`}
+        >
           Email ID
         </button>
-        <button onClick={() => { setLoginMethod("mobile"); setShowOtp(false); }} className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${loginMethod === "mobile" ? "bg-white text-orange-600 shadow-sm" : "text-slate-500"}`}>
+        <button 
+          type="button"
+          onClick={() => { setLoginMethod("mobile"); setShowOtp(false); dispatch(clearErrors()); }} 
+          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${loginMethod === "mobile" ? "bg-white text-orange-600 shadow-sm" : "text-slate-500"}`}
+        >
           Mobile Number
         </button>
       </div>
 
       <form className="space-y-4" onSubmit={handleLogin}>
         {loginMethod === "email" ? (
-          <div>
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-            <input type="email" placeholder="hello@example.com" className="w-full mt-2 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all" />
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="hello@example.com" 
+                className="w-full mt-2 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all" 
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Password</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••" 
+                className="w-full mt-2 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all" 
+              />
+            </div>
           </div>
         ) : (
           <div>
@@ -83,6 +131,7 @@ export default function LoginForm() {
               <input
                 type="tel"
                 value={mobile}
+                maxLength={10}
                 onChange={(e) => setMobile(e.target.value)}
                 placeholder="99999 99999"
                 className="flex-1 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
@@ -91,7 +140,7 @@ export default function LoginForm() {
           </div>
         )}
 
-        {showOtp && (
+        {showOtp && loginMethod === "mobile" && (
           <div className="animate-in fade-in slide-in-from-top-2 duration-300">
             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Enter OTP</label>
             <div className="grid grid-cols-4 gap-3 mt-2">
@@ -103,15 +152,26 @@ export default function LoginForm() {
                   maxLength="1"
                   value={digit}
                   onChange={(e) => handleOtpChange(e.target.value, i)}
-                  className="w-full h-14 text-center text-xl font-bold bg-slate-50 border border-slate-100 rounded-xl focus:border-orange-500 outline-none"
+                  className="w-full h-14 text-center text-xl font-bold bg-slate-50 border border-slate-100 rounded-xl focus:border-orange-500 outline-none transition-all"
                 />
               ))}
             </div>
           </div>
         )}
 
-        <button type="submit" disabled={loading} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-xl transition-all active:scale-95 disabled:opacity-50">
-          {loading ? "Verifying..." : (showOtp ? "Verify & Login" : "Send OTP")}
+        {/* Error Message from Redux */}
+        {error && (
+          <p className="text-red-500 text-xs font-bold mt-2 ml-1 text-center italic">
+            {error}
+          </p>
+        )}
+
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-xl transition-all active:scale-95 disabled:opacity-50"
+        >
+          {loading ? "Please wait..." : (showOtp ? "Verify & Login" : (loginMethod === "mobile" ? "Send OTP" : "Login"))}
         </button>
       </form>
 
@@ -121,6 +181,7 @@ export default function LoginForm() {
       </div>
 
       <button className="w-full flex items-center justify-center gap-3 py-4 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-all font-bold text-slate-700 active:scale-95">
+        <img src="/images/google-icon.png" alt="" className="w-5 h-5" />
         Sign in with Google
       </button>
 

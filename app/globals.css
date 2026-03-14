@@ -24,3 +24,27 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* globals.css */
+
+.tiptap ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-left: 1rem !important;
+}
+
+.tiptap ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-left: 1rem !important;
+}
+
+.tiptap h1 { font-size: 2rem; font-weight: bold; }
+.tiptap h2 { font-size: 1.5rem; font-weight: bold; }
+.tiptap h3 { font-size: 1.25rem; font-weight: bold; }
+
+/* Ensure the editor doesn't hide the bullets */
+.tiptap li p {
+  margin: 0;
+}
