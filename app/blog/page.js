@@ -1,89 +1,8 @@
-'use client';
 
-import { useState } from 'react';
+import BlogList from '@/component/Blogs/Blog';
 
 export default function Blog() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const blogPosts = [
-    {
-      id: 1,
-      title: 'Top 10 Tips for First-Time Home Buyers',
-      excerpt: 'Essential tips and strategies to help you make informed decisions when purchasing your first home.',
-      category: 'buying',
-      author: 'John Smith',
-      date: 'Feb 20, 2026',
-      readTime: '5 min read',
-      image: '🏡',
-      featured: true
-    },
-    {
-      id: 2,
-      title: 'The Ultimate Guide to Home Investment',
-      excerpt: 'Learn how to invest in real estate and build long-term wealth through property investment.',
-      category: 'investment',
-      author: 'Sarah Johnson',
-      date: 'Feb 18, 2026',
-      readTime: '8 min read',
-      image: '📈',
-      featured: true
-    },
-    {
-      id: 3,
-      title: 'Market Trends: What to Expect in 2026',
-      excerpt: 'Detailed analysis of current property market trends and future predictions for the coming year.',
-      category: 'market',
-      author: 'Mike Davis',
-      date: 'Feb 16, 2026',
-      readTime: '6 min read',
-      image: '📊'
-    },
-    {
-      id: 4,
-      title: 'Home Renovation Ideas on Budget',
-      excerpt: 'Creative and affordable renovation ideas to increase your property value without breaking the bank.',
-      category: 'lifestyle',
-      author: 'Emma Wilson',
-      date: 'Feb 14, 2026',
-      readTime: '7 min read',
-      image: '🎨'
-    },
-    {
-      id: 5,
-      title: 'Selling Your Property: A Complete Guide',
-      excerpt: 'Step-by-step guide on how to prepare and sell your property for maximum return.',
-      category: 'selling',
-      author: 'John Smith',
-      date: 'Feb 12, 2026',
-      readTime: '5 min read',
-      image: '💼'
-    },
-    {
-      id: 6,
-      title: 'Smart Home Technology for Modern Living',
-      excerpt: 'Explore the latest smart home technologies that can enhance your living experience and property value.',
-      category: 'lifestyle',
-      author: 'Sarah Johnson',
-      date: 'Feb 10, 2026',
-      readTime: '6 min read',
-      image: '🏠'
-    }
-  ];
-
-  const categories = [
-    { id: 'all', label: 'All Posts' },
-    { id: 'buying', label: 'Buying' },
-    { id: 'selling', label: 'Selling' },
-    { id: 'investment', label: 'Investment' },
-    { id: 'market', label: 'Market' },
-    { id: 'lifestyle', label: 'Lifestyle' }
-  ];
-
-  const filteredPosts = selectedCategory === 'all'
-    ? blogPosts
-    : blogPosts.filter(post => post.category === selectedCategory);
-
-  const featuredPosts = blogPosts.filter(post => post.featured);
 
   return (
     <div className="w-full bg-gradient-to-b from-slate-50 via-white to-slate-100">
@@ -110,7 +29,7 @@ export default function Blog() {
       </section>
 
       {/* Featured Posts Section */}
-      {featuredPosts.length > 0 && (
+      {/* {featuredPosts.length > 0 && (
         <section className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
           <h2 className="text-3xl font-bold text-slate-900 mb-12">Featured Articles</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -153,62 +72,9 @@ export default function Blog() {
             ))}
           </div>
         </section>
-      )}
+      )} */}
 
-      {/* Category Filter */}
-      <section className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-        <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all duration-200 ${
-                selectedCategory === cat.id
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                  : 'bg-white text-slate-700 border border-slate-200 hover:border-blue-600 hover:text-blue-600'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Blog Posts Grid */}
-      <section className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-        <h2 className="text-3xl font-bold text-slate-900 mb-12">
-          {selectedCategory === 'all' ? 'All Articles' : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Articles`}
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {filteredPosts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer border border-slate-100 hover:border-blue-200 flex flex-col"
-            >
-              <div className="relative h-40 bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center overflow-hidden">
-                <span className="text-6xl group-hover:scale-110 transition-transform duration-300">
-                  {post.image}
-                </span>
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <span className="text-xs font-semibold text-blue-600 uppercase mb-2">
-                  {post.category}
-                </span>
-                <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-slate-600 mb-4 flex-grow line-clamp-2">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-4 border-t border-slate-100">
-                  <span>{post.readTime}</span>
-                  <span>{post.date}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <BlogList />
 
       {/* Newsletter Section */}
       <section className="bg-gradient-to-r from-blue-600 to-cyan-600 mt-20 mb-0">

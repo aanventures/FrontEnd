@@ -1,39 +1,56 @@
+"use client";
+import Link from "next/link";
 import Image from "next/image";
+import cloudinaryLoader from "@/utils/cloudinaryLoader";
 
-export default function BlogCard() {
-  // In a real app, you could fetch data here:
-  // const post = await getLatestPost();
+export default function BlogCard({ post }) {
+  if (!post) return null;
 
   return (
-    <div className="relative w-full group">
-      <div className="absolute -inset-4 bg-gradient-to-tr from-orange-100 to-blue-50 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-80 transition duration-1000"></div>
-      <div className="relative bg-white rounded-[2.5rem] shadow-lg overflow-hidden border border-white transform transition duration-500 hover:-translate-y-2">
-        <div className="relative h-64 w-full">
+    <Link href={`/blog/${post.slug}`} className="group h-full">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-blue-200 flex flex-col h-full">
+        
+        {/* Image Container */}
+        <div className="relative h-48 w-full bg-slate-200 overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=800&auto=format&fit=crop"
-            alt="Blog post"
+            loader={cloudinaryLoader}
+            src={post.image?.url || "/placeholder.jpg"}
+            alt={post.title}
             fill
-            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
-          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-orange-600 uppercase tracking-tighter">
-            Trending Stories
-          </div>
         </div>
-        <div className="p-8">
-          <h3 className="text-xl font-bold text-slate-900 leading-snug">
-            How to find the cheapest hotel deals in 2026
+
+        {/* Content Section */}
+        <div className="p-6 flex flex-col flex-grow">
+          <span className="text-xs font-semibold text-blue-600 uppercase mb-2">
+            {post.category}
+          </span>
+          
+          <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+            {post.title}
           </h3>
-          <p className="text-slate-500 text-sm mt-3 line-clamp-2">
-            Discover the secret tricks travel agencies don't want you to know...
+          
+          <p className="text-sm text-slate-600 mb-4 flex-grow line-clamp-2 italic">
+            {post.excerpt}
           </p>
-          <div className="mt-6 flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">5 min read</span>
-            <button className="text-sm font-bold text-orange-600 hover:text-orange-700 transition">
-              Read Story →
-            </button>
+
+          {/* Footer Metadata */}
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-4 border-t border-slate-100">
+            <span>
+              {new Date(post.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            <span className="text-blue-600 font-bold group-hover:translate-x-1 transition-transform">
+              Read More →
+            </span>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

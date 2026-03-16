@@ -1,0 +1,25 @@
+.sliderWrapper {
+  position: relative;
+  padding-bottom: 20px; /* Space for dots */
+}
+
+/* Move dots higher so they don't get cut off */
+.sliderWrapper :global(.slick-dots) {
+  bottom: -10px !important;
+}
+
+.sliderWrapper :global(.slick-dots li button:before) {
+  color: #f97316 !important;
+  font-size: 8px;
+  opacity: 0.3;
+}
+
+.sliderWrapper :global(.slick-dots li.slick-active button:before) {
+  opacity: 1;
+  color: #ea580c !important;
+}
+
+/* Ensure the card doesn't look squashed */
+.sliderWrapper :global(.slick-slide) {
+  padding: 5px;
+}

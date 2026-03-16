@@ -5,6 +5,8 @@ import "./globals.css";
 // 1. Import the Provider and the Auth Initializer
 import { StoreProvider } from "@/store/StoreProvider";
 import AuthInitializer from "@/component/AuthInitializer";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function RootLayout({ children }) {
   return (

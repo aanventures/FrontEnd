@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
+import blogReducer from "../store/slices/blogSlice"
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // Add other reducers here as you build them (e.g., blogs, hotels)
+    blog: blogReducer, 
   },
   devTools: process.env.NODE_ENV !== "production",
 });
