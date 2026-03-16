@@ -12,57 +12,61 @@ export const authenticateUser = createAsyncThunk(
       const { data } = await axios.post(
         `${baseUrl}/api/users/auth`,
         credentials,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       return data.user;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Authentication failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Authentication failed",
+      );
     }
-  }
+  },
 );
 
+// store/slices/authSlice.js
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`${baseUrl}/api/users/me`, { 
-        withCredentials: true 
-      });
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
+        {
+          withCredentials: true,
+        },
+      );
       return data.user;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Session expired");
+      return rejectWithValue(error.response.data.message);
     }
-  }
+  },
 );
 
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async ({ id, userData }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.put(
-        `${baseUrl}/api/users/${id}`,
-        userData,
-        { withCredentials: true }
-      );
+      const { data } = await axios.put(`${baseUrl}/api/users/${id}`, userData, {
+        withCredentials: true,
+      });
       return data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Update failed");
     }
-  }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`${baseUrl}/api/users/logout`, { 
-        withCredentials: true 
+      const { data } = await axios.get(`${baseUrl}/api/users/logout`, {
+        withCredentials: true,
       });
       return data.message;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Logout failed");
     }
-  }
+  },
 );
 
 // --- THE SLICE ---
@@ -87,7 +91,7 @@ const authSlice = createSlice({
     logoutLocal: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,7 +110,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       // Load User
       .addCase(loadUser.pending, (state) => {
         state.loading = true;

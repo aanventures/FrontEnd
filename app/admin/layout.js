@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/component/admin/dashboard/Sidebar";
@@ -8,57 +8,56 @@ import { Loader2, ShieldAlert } from "lucide-react";
 export default function AdminLayout({ children }) {
   const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // If loading is finished and user is not an admin, redirect to login
-    // We use router.replace to prevent the user from clicking "back" into the admin area
-    if (!loading && (!isAuthenticated || user?.role !== "admin")) {
-      router.replace("/login");
-    }
-  }, [isAuthenticated, user, loading, router]);
+    setIsMounted(true);
+  }, []);
 
-  // 1. Show a professional Loading State while checking authentication
-  if (loading) {
+  useEffect(() => {
+    if (isMounted && !loading) {
+      if (!isAuthenticated || user?.role !== "admin") {
+        router.replace("/login");
+      }
+    }
+  }, [isAuthenticated, user, loading, router, isMounted]);
+
+  if (!isMounted || loading) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
         <Loader2 className="animate-spin text-orange-600 mb-4" size={40} />
-        <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-          Securing Environment...
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+          Verifying Authority
         </p>
       </div>
     );
   }
 
-  // 2. If check fails, show nothing (or a small error) while the useEffect redirects
+  // 2. Fallback for unauthorized (while redirect happens)
   if (!isAuthenticated || user?.role !== "admin") {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
-         <ShieldAlert className="text-red-500 mb-2" size={48} />
-         <p className="text-slate-600 font-bold">Access Denied</p>
+        <ShieldAlert className="text-red-500 mb-4" size={48} />
+        <p className="text-slate-900 font-black uppercase tracking-widest text-xs">Access Denied</p>
       </div>
     );
   }
 
-  // 3. If authenticated and is admin, render the actual layout
+  // 3. Final Layout
   return (
     <div className="flex bg-slate-50 min-h-screen pt-[100px]">
-      {/* Static Sidebar */}
       <Sidebar />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Header/Navbar */}
-        <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
+      <div className="flex-1 flex flex-col"> {/* Adjusted for sidebar width */}
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center sticky top-0 z-10">
           <div>
-            <h1 className="text-lg font-bold text-slate-800">Dashboard Console</h1>
-            <p className="text-xs text-slate-500">
-              Welcome back, <span className="text-orange-600 font-bold">{user?.name || "Administrator"}</span>
+            <h1 className="text-sm font-black text-slate-900 uppercase tracking-tighter">Console</h1>
+            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">
+              Admin: <span className="text-orange-600">{user?.name}</span>
             </p>
           </div>
         </header>
 
-        {/* Dynamic Content */}
-        <main className="p-8">
+        <main className="p-3">
           {children}
         </main>
       </div>
