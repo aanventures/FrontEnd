@@ -204,7 +204,6 @@ const blogSlice = createSlice({
         if (index !== -1) {
           state.blogs[index] = action.payload;
         }
-        // Also update the single blog state if we are currently viewing it
         if (state.blog?._id === action.payload._id) {
           state.blog = action.payload;
         }
