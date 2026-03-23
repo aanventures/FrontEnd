@@ -48,3 +48,41 @@ body {
 .tiptap li p {
   margin: 0;
 }
+
+/* Ensure 2-month calendar is horizontal */
+.react-datepicker__months-container {
+  display: flex !important;
+  flex-direction: row !important;
+  background-color: white;
+}
+
+/* Luxury Styling for the Calendar Popup */
+.react-datepicker {
+  border: none !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 20px !important;
+  padding: 10px !important;
+  font-family: inherit !important;
+}
+
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: none !important;
+}
+
+.react-datepicker__day--in-range {
+  background-color: #fdf6ee !important;
+  color: #C29263 !important;
+}
+
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end,
+.react-datepicker__day--selected {
+  background-color: #C29263 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__navigation {
+  top: 15px !important;
+}

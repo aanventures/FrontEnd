@@ -22,9 +22,9 @@ export default function ProfilePage() {
   const sidebarLinks = [
     {
       id: "dashboard",
-      label: "Dashboard",
+      label: "Dashboard", 
       icon: <LayoutDashboard size={20} />,
-      href: "/admin/dashboard",
+      href: "/admin",
     },
     { id: "profile", label: "My Profile", icon: <User size={20} /> },
     { id: "settings", label: "Settings", icon: <Settings size={20} /> },

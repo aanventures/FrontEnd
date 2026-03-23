@@ -49,33 +49,46 @@ export default function BlogDetails() {
     setCommentText("");
   };
 
-  if (loading)
+  // 1. First, check if we are currently fetching data
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-            Loading Story
+      <div className="min-h-screen flex items-center justify-center bg-[#FDF8F2]">
+        <div className="flex flex-col items-center">
+          {/* Tripaango Style Loader */}
+          <div className="h-12 w-12 border-4 border-[#C9A67F] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-[#1D3178] text-xs font-bold uppercase tracking-widest animate-pulse">
+            Loading Story...
           </p>
         </div>
       </div>
     );
+  }
 
-  if (error || !blog)
+  // 2. ONLY check for "Not Found" if we are NOT loading and blog is still missing
+  if (!loading && (error || !blog)) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-        <h2 className="text-2xl font-bold text-slate-800">Article not found</h2>
-        <button
-          onClick={() => router.push("/blog")}
-          className="mt-4 text-blue-600 font-semibold hover:underline"
-        >
-          Return to Blog Feed
-        </button>
+      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-[#FDF8F2]">
+        <div className="bg-white p-10 rounded-2xl shadow-xl border border-gray-100 max-w-md">
+          <h2 className="text-3xl font-bold text-[#1D3178] mb-2">
+            Article Not Found
+          </h2>
+          <p className="text-gray-500 mb-6 text-sm">
+            The travel story you are looking for might have been moved or
+            deleted.
+          </p>
+          <button
+            onClick={() => router.push("/blog")}
+            className="bg-[#C9A67F] text-white px-8 py-3 rounded-full font-bold hover:bg-[#1D3178] transition-all shadow-lg"
+          >
+            Return to Blog Feed
+          </button>
+        </div>
       </div>
     );
+  }
 
   return (
-    <main className="bg-[#FCFCFD] min-h-screen pb-20 pt-[100px]">
+    <main className="bg-[#FCFCFD] min-h-screen pb-20 ">
       {/* 1. Hero Image Section */}
       <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden">
         <img
@@ -83,14 +96,14 @@ export default function BlogDetails() {
           alt={blog.title}
           className="w-full h-full object-cover shadow-inner"
         />
-        <div className="absolute top-8 left-8 z-20">
+        {/* <div className="absolute top-8 left-8 z-20">
           <button
             onClick={() => router.back()}
             className="bg-white/90 backdrop-blur px-5 py-2 rounded-full text-slate-900 text-xs font-bold shadow-xl hover:bg-white transition-all active:scale-95"
           >
             ← BACK
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full flex flex-col items-center justify-center">
@@ -235,14 +248,11 @@ export default function BlogDetails() {
                           {c.author?.name}
                         </span>
                         <span className="text-[10px] font-bold text-slate-300 uppercase">
-                          {new Date(c?.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            },
-                          )}
+                          {new Date(c?.createdAt).toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
                         </span>
                       </div>
                       <p className="text-slate-600 leading-relaxed pl-11">
