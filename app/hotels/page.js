@@ -1,141 +1,151 @@
+"use client";
 import React from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
+import { Star, MapPin, Coffee, ShieldCheck, Wifi, Car, Search, ChevronRight, Clock } from 'lucide-react';
 
 const hotelsData = {
-  mmt: { ota: 'MakeMyTrip.com', price: '₹8,250', duration: 'From 3h 30mins', features: 'Free Check-In, Starts' },
-  booking: { ota: 'Booking.com', price: '₹8,150', duration: 'From 2h 50min', features: 'Free Check-In, Starts' },
-  cleartrip: { ota: 'Cleartrip.com', price: '₹8,300', duration: 'From 2h 55min', features: 'Free Check-In, Seats' },
+  mmt: { ota: 'MakeMyTrip.com', price: '₹8,250', duration: 'Best Value', features: 'Free Cancelation' },
+  booking: { ota: 'Booking.com', price: '₹8,150', duration: 'Lowest Price', features: 'Pay at Hotel' },
+  cleartrip: { ota: 'Cleartrip.com', price: '₹8,300', duration: 'Premium Choice', features: 'Breakfast Included' },
   detailedHotels: [
-    { name: 'Kingsbury Grand', rating: '4 star', location: '1.5 km From India Gate', features: ['Set-key Room', 'Free Cancelation', 'Breakfast', 'Deals included'], price: '₹8,150', ota: 'IndiGo (example OTA label)' },
-    { name: 'Imperial Plaza', rating: '3 star', location: '1.5 km From Major Road', features: ['Set-key Room', 'Free Cancelation', 'Breakfast', 'Deals included'], price: '₹6,875', ota: 'Booking.com (example)' },
-    { name: 'Heritage Royale', rating: '3 star', location: '1.5 km From major Landmark', features: ['Set-key Room', 'Free Cancelation', 'Breakfast', 'Deals included'], price: '₹5,600', ota: 'MakeMyTrip.com (example)' },
+    { name: 'Kingsbury Grand', rating: 4, location: '1.5 km From India Gate', features: ['Set-key Room', 'Free Cancelation', 'Breakfast'], price: '₹8,150', ota: 'IndiGo Hotels', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=800' },
+    { name: 'Imperial Plaza', rating: 3, location: '2.2 km From Connaught Place', features: ['WiFi', 'Parking', 'Breakfast'], price: '₹6,875', ota: 'Booking.com', image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=800' },
+    { name: 'Heritage Royale', rating: 5, location: '0.5 km From Airport', features: ['Pool', 'Gym', 'Free Cancelation'], price: '₹12,600', ota: 'MakeMyTrip.com', image: 'https://images.unsplash.com/photo-1551882547-ff43c63efe8c?auto=format&fit=crop&q=80&w=800' },
   ]
 };
 
 const HotelResultsPage = () => {
   return (
-    <>
-      <Head>
-        <title>Tripaango | Compare and Book Hotels in Delhi</title>
-      </Head>
+    <main className="min-h-screen bg-[#FAF7F2] font-montserrat text-slate-900 pt-[90px]">
+      
+      {/* 1. CINEMATIC HERO SECTION */}
+      <section className="relative w-full pb-10 sm:pb-0 sm:h-[400px] bg-slate-900 flex items-center justify-center overflow-hidden">
+        <Image
+          src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=1600"
+          alt="Hotel Banner"
+          fill
+          className="object-cover opacity-40"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#FAF7F2] z-10" />
 
-      <div className="min-h-screen bg-[#F5F1EB] text-[#2C2C2C] font-serif">
-        {/* Header/Navbar (identical to flights) */}
-        <header className="bg-white border-b border-gray-100 shadow-sm">
-          <nav className="container mx-auto px-6 py-4 flex items-center justify-between text-[#B39371]">
-            <div className="flex items-center gap-1">
-              <div className="w-8 h-8 rounded-full bg-[#B39371] flex items-center justify-center text-white font-bold">T</div>
-              <div>
-                <span className="text-2xl font-bold">tripaango</span>
-                <p className="text-xs text-gray-500">Discover, Relax and Go Beyond</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-8 text-sm font-medium">
-              <span>Home</span>
-              <span>Flights</span>
-              <span>Hotels</span>
-              <span>Cars</span>
-              <span>Packages</span>
-              <span>Blog</span>
-              <span>Contact</span>
-            </div>
-          </nav>
-        </header>
-
-        {/* Hero Section */}
-        <div className="relative bg-[#020D32] text-white py-16 px-6">
-          <div className="container mx-auto">
-            <h1 className="text-4xl font-light mb-4 text-[#C9A67F]">Compare and Book Hotels in Delhi</h1>
-            <p className="text-sm text-gray-400 mb-10">Home &gt; Delhi (DEL)</p>
-            
-            {/* Hotel Search Bar */}
-            <div className="bg-white text-black p-4 rounded-lg flex items-center gap-4 shadow-xl border border-gray-200">
-              <input type="text" defaultValue="Delhi (DEL)" className="flex-1 p-3 border rounded border-gray-300" />
-              <input type="date" defaultValue="2024-06-14" className="p-3 border rounded border-gray-300" />
-              <input type="date" defaultValue="2024-06-17" className="p-3 border rounded border-gray-300" />
-              <input type="text" defaultValue="2 Guests, 1 Room" className="w-48 p-3 border rounded border-gray-300" />
-              <button className="bg-[#B39371] text-white px-8 py-3 rounded font-medium hover:bg-[#997E61]">Search Again</button>
-            </div>
+        <div className="relative z-20 container mx-auto px-6 text-center">
+          {/* <p className="text-amber-500 font-black uppercase tracking-[0.3em] text-[10px] mb-4">Luxury Stays & Comfort</p>
+          <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-none m-0">
+            Delhi <span className="text-amber-500 not-italic">Hotels</span>
+          </h1> */}
+          
+          {/* Compact Search Bar Overlay */}
+          <div className="mt-12 max-w-5xl mx-auto bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 border border-slate-100">
+             <div className="flex-1 flex items-center px-4 py-3 gap-3 border-r border-slate-50">
+                <MapPin size={18} className="text-amber-600" />
+                <input type="text" defaultValue="Delhi, India" className="w-full outline-none font-bold text-sm text-slate-700 bg-transparent" />
+             </div>
+             <div className="flex-1 flex items-center px-4 py-3 gap-3 border-r border-slate-50">
+                <Clock size={18} className="text-amber-600" />
+                <span className="text-sm font-bold text-slate-700 whitespace-nowrap">14 Jun - 17 Jun</span>
+             </div>
+             <button className="bg-amber-600 text-white px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[11px] hover:bg-slate-900 transition-all active:scale-95 flex items-center justify-center gap-2">
+                Update <Search size={14} />
+             </button>
           </div>
         </div>
+      </section>
 
-        {/* Main Content */}
-        <main className="container mx-auto p-6 grid grid-cols-[250px_1fr] gap-8 mt-10">
-          
-          {/* Filters Sidebar (simplified) */}
-          <aside className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-8">
-            <h2 className="text-lg font-bold text-[#B39371] mb-6">Filters</h2>
-            <FilterGroup title="Price" items={['₹0 - ₹2000', '₹2000 - ₹5000', '₹5000+']} />
-            <FilterGroup title="Star Rating" items={['5 Stars', '4 Stars', '3 Stars', '2 Stars']} />
-            <FilterGroup title="Amenities" items={['Free WiFi', 'Breakfast', 'Pool', 'Parking']} />
-          </aside>
-
-          {/* Results Area */}
-          <section>
-            <h2 className="text-2xl font-light mb-8 text-[#B39371]">Compare and Book Hotels in Delhi</h2>
+      {/* 2. RESULTS GRID */}
+      <div className="container mx-auto px-4 md:px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
+        
+        {/* Filters Sidebar */}
+        <aside className="space-y-8">
+          <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+            <h2 className="text-xl font-black text-slate-900 mb-8 tracking-tight border-b border-slate-50 pb-4">Filters</h2>
             
-            {/* OTA Comparison Cards (identical to flights for consistancy) */}
-            <div className="grid grid-cols-3 gap-6 mb-10">
-              <OTACard data={hotelsData.mmt} />
-              <OTACard data={hotelsData.booking} />
-              <OTACard data={hotelsData.cleartrip} />
-            </div>
+            <FilterGroup title="Star Rating" items={['5 Stars', '4 Stars', '3 Stars']} />
+            <FilterGroup title="Price Range" items={['Under ₹2,000', '₹2,000 - ₹5,000', '₹5,000+']} />
+            <FilterGroup title="Amenities" items={['WiFi', 'Pool', 'Breakfast', 'Parking']} />
+          </div>
+        </aside>
 
-            {/* Detailed Hotel List */}
-            <div className="space-y-6">
-              {hotelsData.detailedHotels.map((hotel, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex gap-6 hover:shadow-lg transition-all">
-                  
-                  {/* Hotel Image Placeholder */}
-                  <div className="w-48 h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 font-bold text-lg">Hotel Image</div>
+        {/* Results Area */}
+        <section className="space-y-10">
+          
+          {/* Top Comparison Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <OTACard data={hotelsData.mmt} />
+            <OTACard data={hotelsData.booking} />
+            <OTACard data={hotelsData.cleartrip} />
+          </div>
 
-                  {/* Hotel Details */}
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className='flex items-center gap-3 mb-1'>
-                        <h3 className="text-xl font-bold">{hotel.name}</h3>
-                        <span className="text-xs text-white bg-[#B39371] px-2 py-0.5 rounded-full font-bold">{hotel.rating}</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-3">{hotel.location}</p>
-                      
-                      {/* Amenity tags */}
-                      <div className="flex flex-wrap gap-2">
-                        {hotel.features.map(feature => (
-                          <span key={feature} className="text-xs bg-gray-100 text-[#B39371] px-3 py-1 rounded-full font-medium">✓ {feature}</span>
-                        ))}
-                      </div>
-                    </div>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Best Deals in New Delhi</h2>
+
+          {/* Hotel List */}
+          <div className="space-y-6">
+            {hotelsData.detailedHotels.map((hotel, index) => (
+              <div key={index} className="group bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col md:flex-row">
+                
+                {/* Hotel Image */}
+                <div className="md:w-72 h-64 md:h-auto relative overflow-hidden">
+                  <img src={hotel.image} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                    <Star size={12} className="text-amber-500 fill-amber-500" />
+                    <span className="text-[10px] font-black">{hotel.rating}.0</span>
                   </div>
-
-                  {/* Pricing and Action */}
-                  <div className="w-48 text-right flex flex-col items-end justify-between border-l border-gray-100 pl-6">
-                    <div>
-                        <p className="text-sm text-gray-500 mb-1">{hotel.ota}</p>
-                        <p className="text-3xl font-light tracking-tight text-[#2C2C2C] mb-2">{hotel.price}</p>
-                        <p className="text-xs text-gray-500">per night</p>
-                    </div>
-                    <button className="bg-[#B39371] text-white w-full py-3 rounded font-medium hover:bg-[#997E61]">View Deal</button>
-                  </div>
-
                 </div>
-              ))}
-            </div>
-          </section>
-        </main>
+
+                {/* Info Content */}
+                <div className="flex-1 p-8 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-900 mb-2 group-hover:text-amber-600 transition-colors tracking-tight">{hotel.name}</h3>
+                    <div className="flex items-center gap-1 text-slate-400 text-xs font-bold mb-6">
+                       <MapPin size={12} /> {hotel.location}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                       {hotel.features.map(f => (
+                         <div key={f} className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                            <CheckCircle2 size={12} className="text-amber-600" />
+                            <span className="text-[10px] font-black uppercase text-slate-500">{f}</span>
+                         </div>
+                       ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pricing Area */}
+                <div className="md:w-64 bg-slate-50/50 p-8 flex flex-col items-center justify-center border-l border-slate-100 text-center">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Via {hotel.ota}</p>
+                  <div className="flex items-baseline gap-1 mb-6">
+                    <span className="text-3xl font-black text-slate-900">{hotel.price}</span>
+                    <span className="text-[10px] font-black text-slate-400">/night</span>
+                  </div>
+                  <button className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-600 transition-all shadow-xl shadow-slate-200">
+                    View Deal
+                  </button>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
-    </>
+    </main>
   );
 };
 
-// Reusable Components (identical structure to Flights, just imported here for reference within the file)
+/* --- Sub-Components --- */
+
 const FilterGroup = ({ title, items }) => (
-  <div className="border-t border-gray-100 pt-6">
-    <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-600 mb-4">{title}</h3>
-    <div className="space-y-3">
+  <div className="mb-10 last:mb-0">
+    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">{title}</h3>
+    <div className="space-y-4">
       {items.map(item => (
-        <label key={item} className="flex items-center gap-3 text-sm text-gray-700 cursor-pointer">
-          <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#B39371] focus:ring-[#B39371]" />
-          {item}
+        <label key={item} className="flex items-center gap-3 cursor-pointer group">
+          <div className="relative flex items-center justify-center">
+            <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-slate-100 rounded-lg checked:bg-amber-600 checked:border-amber-600 transition-all" />
+            <div className="absolute opacity-0 peer-checked:opacity-100 text-white font-bold text-[10px]">✓</div>
+          </div>
+          <span className="text-sm font-bold text-slate-600 group-hover:text-amber-600 transition-colors">{item}</span>
         </label>
       ))}
     </div>
@@ -143,19 +153,22 @@ const FilterGroup = ({ title, items }) => (
 );
 
 const OTACard = ({ data }) => (
-  <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-between hover:border-[#B39371] transition-all">
-    <div className='flex items-center gap-3 mb-4 border-b border-gray-100 pb-4'>
-        <div className='w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-bold text-[#B39371]'>{data.ota.charAt(0)}</div>
-        <p className="font-bold text-gray-900">{data.ota}</p>
+  <div className="bg-white p-6 rounded-[2rem] border border-slate-50 shadow-lg shadow-slate-200/30 flex flex-col items-center text-center hover:border-amber-500 transition-all group">
+    <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center font-black text-amber-600 mb-4 group-hover:bg-amber-600 group-hover:text-white transition-all">
+        {data.ota.charAt(0)}
     </div>
-    <div className='text-center space-y-3'>
-        <p className="text-3xl font-light tracking-tight text-[#2C2C2C]">{data.price}</p>
-        <p className="text-sm text-gray-500">{data.duration}</p>
-    </div>
-    <div className='mt-6 border-t border-gray-100 pt-4'>
-        <p className="text-sm text-[#B39371] font-medium">{data.features}</p>
-    </div>
+    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{data.ota}</p>
+    <p className="text-2xl font-black text-slate-900 mb-1">{data.price}</p>
+    <p className="text-[10px] font-black text-amber-600 uppercase tracking-tighter">{data.duration}</p>
   </div>
+);
+
+/* Utility Icons added locally for the file */
+const CheckCircle2 = ({ size, className }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
 );
 
 export default HotelResultsPage;

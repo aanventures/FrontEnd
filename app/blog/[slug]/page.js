@@ -2,13 +2,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
 import {
   fetchBlogBySlug,
   resetBlogState,
   likeBlogAction,
   addCommentAction,
-  // toggleSaveBlog, // Uncomment when your save API is ready
 } from "@/store/slices/blogSlice";
+import Image from "next/image";
 
 export default function BlogDetails() {
   const { slug } = useParams();
@@ -17,27 +18,16 @@ export default function BlogDetails() {
 
   const { blog, loading, error } = useSelector((state) => state.blog);
   const { isAuthenticated } = useSelector((state) => state.auth);
-
-  // Local state for the comment textarea
   const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    if (slug) {
-      dispatch(fetchBlogBySlug(slug));
-    }
-    return () => {
-      dispatch(resetBlogState());
-    };
+    if (slug) dispatch(fetchBlogBySlug(slug));
+    return () => dispatch(resetBlogState());
   }, [slug, dispatch]);
 
   const handleLike = () => {
-    if (!isAuthenticated) return alert("Please login to like this post");
+    if (!isAuthenticated) return alert("Please login to like");
     dispatch(likeBlogAction(blog._id));
-  };
-
-  const handleSave = () => {
-    if (!isAuthenticated) return alert("Please login to save articles");
-    // dispatch(toggleSaveBlog(blog._id));
   };
 
   const handleCommentSubmit = (e) => {
@@ -49,223 +39,186 @@ export default function BlogDetails() {
     setCommentText("");
   };
 
-  // 1. First, check if we are currently fetching data
-  if (loading) {
+  if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FDF8F2]">
-        <div className="flex flex-col items-center">
-          {/* Tripaango Style Loader */}
-          <div className="h-12 w-12 border-4 border-[#C9A67F] border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-[#1D3178] text-xs font-bold uppercase tracking-widest animate-pulse">
-            Loading Story...
-          </p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-12 w-12 border-t-2 border-amber-500 rounded-full" />
       </div>
     );
-  }
 
-  // 2. ONLY check for "Not Found" if we are NOT loading and blog is still missing
-  if (!loading && (error || !blog)) {
+  if (!blog || error)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-[#FDF8F2]">
-        <div className="bg-white p-10 rounded-2xl shadow-xl border border-gray-100 max-w-md">
-          <h2 className="text-3xl font-bold text-[#1D3178] mb-2">
-            Article Not Found
-          </h2>
-          <p className="text-gray-500 mb-6 text-sm">
-            The travel story you are looking for might have been moved or
-            deleted.
-          </p>
-          <button
-            onClick={() => router.push("/blog")}
-            className="bg-[#C9A67F] text-white px-8 py-3 rounded-full font-bold hover:bg-[#1D3178] transition-all shadow-lg"
-          >
-            Return to Blog Feed
-          </button>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-bold mb-4">Story Not Found</h2>
+        <button onClick={() => router.push("/blog")} className="text-amber-500">
+          Back to Feed
+        </button>
       </div>
     );
-  }
 
   return (
-    <main className="bg-[#FCFCFD] min-h-screen pb-20 ">
-      {/* 1. Hero Image Section */}
-      <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden">
-        <img
+    <main className="bg-white min-h-screen py-[90px] ">
+      {/* HERO */}
+      <section className="relative h-[70vh] overflow-hidden group">
+        <Image
           src={blog.image?.url}
+          fill
           alt={blog.title}
-          className="w-full h-full object-cover shadow-inner"
+          className="w-full h-full object-cover scale-105 group-hover:scale-110 transition duration-[2000ms]"
         />
-        {/* <div className="absolute top-8 left-8 z-20">
-          <button
-            onClick={() => router.back()}
-            className="bg-white/90 backdrop-blur px-5 py-2 rounded-full text-slate-900 text-xs font-bold shadow-xl hover:bg-white transition-all active:scale-95"
-          >
-            ← BACK
-          </button>
-        </div> */}
+
+        <div className="flex items-center justify-center  bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+        {/* <button
+          onClick={() => router.back()}
+          className=" z-20 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white"
+        >
+          ← Back
+        </button> */}
+
+     
+      </section>
+      
+
+      {/* FLOATING ACTIONS */}
+      <div className="hidden lg:flex flex-col gap-4 fixed left-10 top-1/3 z-40">
+        <button
+          onClick={handleLike}
+          className="w-12 h-12 bg-white shadow rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition"
+        >
+          <Heart />
+        </button>
+
+        <button className="w-12 h-12 bg-white shadow rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white transition">
+          <MessageCircle />
+        </button>
+
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied!");
+          }}
+          className="w-12 h-12 bg-white shadow rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white transition"
+        >
+          <Share2 />
+        </button>
       </div>
+     {/* CONTENT */}
+<section className="max-w-5xl mx-auto px-4 md:px-6 mt-10 md:mt-16">
 
-      <div className="w-full flex flex-col items-center justify-center">
-        {/* 2. Content Container */}
-        <div className="max-w-5xl px-6 w-full">
-          {/* Floating Title Card */}
-          <header className="p-8 md:p-12 relative z-10  ">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="bg-blue-600 text-white px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded">
-                {blog.category}
-              </span>
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                {Math.ceil((blog.content?.length || 0) / 800)} min read
-              </span>
-            </div>
+  {/* TITLE BLOCK */}
+  <div className="max-w-3xl text-slate-900">
+    <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold tracking-wide">
+      {blog.category}
+    </span>
 
-            <h1 className="text-3xl md:text-3xl font-extrabold text-slate-900 leading-tight mb-6">
-              {blog.title}
-            </h1>
+    <h1 className="mt-3 text-2xl md:text-4xl font-bold leading-snug tracking-tight">
+      {blog.title}
+    </h1>
+  </div>
 
-            <p className="text-lg text-slate-500 leading-relaxed italic border-l-4 border-blue-500 pl-6 mb-8">
-              {blog.excerpt}
-            </p>
+  {/* SHORT DESCRIPTION */}
+  <div className="w-full mt-4">
+    <p
+      className="text-slate-600 text-sm md:text-base leading-relaxed font-normal 
+                 line-clamp-3 md:line-clamp-4"
+    >
+      {blog.content
+        ? blog.content
+            .replace(/<[^>]*>/g, "")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&amp;/g, "&")
+        : ""}
+    </p>
+  </div>
 
-            <div className="flex items-center gap-4 pt-6 border-t border-slate-50">
-              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 font-bold border border-slate-200 uppercase text-lg shadow-sm">
-                {blog.author?.name?.charAt(0) || "A"}
-              </div>
-              <div>
-                <p className="text-base font-bold text-slate-900">
-                  {blog.author?.name || "Team Tripaango"}
-                </p>
-                <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">
-                  {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-            </div>
-          </header>
+  {/* FLOATING INFO CARD */}
+  <div className="w-full relative z-20 mt-8">
+    <div className="bg-white p-5 md:p-6 rounded-2xl  flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 
-          {/* 3. Article Body (Clean Typography, Flat Design) */}
-          <div className="max-w-screen-xl mx-auto px-6 lg:px-12">
-            <article className="max-w-3xl mx-auto">
-              <div
-                className="prose prose-slate prose-lg max-w-none 
-            w-full break-words whitespace-normal
-            prose-p:text-slate-700 prose-p:leading-[1.9] prose-p:mb-10 prose-p:text-lg
-            prose-headings:text-slate-900 prose-headings:font-black prose-headings:tracking-tight
-            prose-strong:text-slate-900 prose-strong:font-bold
-            prose-img:rounded-none prose-img:shadow-none prose-img:my-16"
-              >
-                <div
-                  className="break-words"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
-                />
-              </div>
-
-              {/* 4. Minimalist Interaction Row */}
-              <footer className="mt-24 pt-10 border-t border-slate-100 flex flex-wrap items-center justify-between gap-8">
-                <div className="flex items-center gap-10">
-                  <button
-                    onClick={handleLike}
-                    className="flex items-center gap-2 group"
-                  >
-                    <span className="text-xl transition-transform group-hover:scale-110">
-                      ❤️
-                    </span>
-                    <span className="text-sm font-black text-slate-900 tracking-tighter">
-                      {blog.likesCount || 0}
-                    </span>
-                  </button>
-
-                  <button className="flex items-center gap-2 group">
-                    <span className="text-xl transition-transform group-hover:scale-110">
-                      💬
-                    </span>
-                    <span className="text-sm font-black text-slate-900 tracking-tighter">
-                      {blog.commentsCount || 0}
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={handleSave}
-                    className="flex items-center gap-2 group"
-                  >
-                    <span className="text-xl transition-transform group-hover:scale-110">
-                      {blog.isSaved ? "🔖" : "📑"}
-                    </span>
-                    <span className="text-sm font-black text-slate-900 tracking-tighter uppercase tracking-widest text-[10px]">
-                      {blog.isSaved ? "Saved" : "Save Story"}
-                    </span>
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    alert("Link copied!");
-                  }}
-                  className="text-[11px] font-black text-slate-900 border-b-2 border-orange-500 pb-1 hover:text-orange-600 transition-all uppercase tracking-widest"
-                >
-                  Share Article
-                </button>
-              </footer>
-
-              {/* 5. Discussion (Seamless integration) */}
-              <section className="mt-24">
-                <h3 className="text-2xl font-black text-slate-900 mb-10 tracking-tight">
-                  Discussion
-                </h3>
-
-                <form onSubmit={handleCommentSubmit} className="mb-16">
-                  <textarea
-                    rows="3"
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
-                    placeholder="Write a response..."
-                    className="w-full py-4 border-b border-slate-200 focus:border-orange-500 outline-none transition-all resize-none text-slate-800 bg-transparent placeholder:text-slate-300 text-lg"
-                  />
-                  <div className="flex justify-end mt-4">
-                    <button
-                      type="submit"
-                      disabled={!commentText.trim()}
-                      className="bg-orange-600 text-white px-8 py-3 rounded-full font-black text-[11px] uppercase tracking-widest hover:bg-slate-900 transition-all disabled:opacity-30"
-                    >
-                      Publish Response
-                    </button>
-                  </div>
-                </form>
-
-                <div className="space-y-12">
-                  {blog.comments?.map((c, i) => (
-                    <div key={i} className="group">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-black text-[10px] text-slate-500 border border-slate-200">
-                          {c.author?.name?.charAt(0) || "U"}
-                        </div>
-                        <span className="text-sm font-black text-slate-900 tracking-tight">
-                          {c.author?.name}
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-300 uppercase">
-                          {new Date(c?.createdAt).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      <p className="text-slate-600 leading-relaxed pl-11">
-                        {c.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </article>
-          </div>
+      {/* AUTHOR */}
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow">
+          {blog.author?.name?.charAt(0) || "A"}
+        </div>
+        <div>
+          <p className="font-semibold text-sm text-slate-800">
+            {blog.author?.name}
+          </p>
+          <p className="text-xs text-gray-400">
+            {new Date(blog.createdAt).toDateString()}
+          </p>
         </div>
       </div>
+
+      {/* STATS */}
+      <div className="flex gap-6 text-xs md:text-sm text-gray-500 font-medium">
+        <span>⏱ {Math.ceil((blog.content?.length || 0) / 800)} min</span>
+        <span>💬 {blog.commentsCount || 0}</span>
+        <span>❤️ {blog.likesCount || 0}</span>
+      </div>
+    </div>
+  </div>
+
+  {/* COMMENTS */}
+  <div className="mt-14 md:mt-20">
+    <h3 className="text-xl md:text-2xl font-bold mb-6 text-slate-900">
+      Comments
+    </h3>
+
+    {/* COMMENT BOX */}
+    <form
+      onSubmit={handleCommentSubmit}
+      className="bg-white shadow-sm p-5 rounded-2xl mb-8"
+    >
+      <textarea
+        rows="4"
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        placeholder="Write a comment..."
+        className="w-full border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+      />
+
+      <div className="flex justify-end mt-4">
+        <button
+          type="submit"
+          className="bg-amber-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-amber-600 transition"
+        >
+          Post
+        </button>
+      </div>
+    </form>
+
+    {/* COMMENTS LIST */}
+    <div className="space-y-5">
+      {blog.comments?.map((c, i) => (
+        <div key={i} className="flex gap-3">
+          
+          {/* AVATAR */}
+          <div className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center font-semibold text-sm">
+            {c.author?.name?.charAt(0)}
+          </div>
+
+          {/* COMMENT CARD */}
+          <div className="bg-white rounded-xl p-4 w-full  shadow hover:shadow-md transition">
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold text-slate-800">
+                {c.author?.name}
+              </span>
+              <span className="text-gray-400">
+                {new Date(c.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {c.text}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
     </main>
   );
 }

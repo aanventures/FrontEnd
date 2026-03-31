@@ -2,16 +2,18 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
-import { updateBlogAction, fetchAllBlogs, resetBlogState } from "@/store/slices/blogSlice"; 
+import { updateBlogAction, fetchAllBlogs, resetBlogState, updateBlogGalleryAction } from "@/store/slices/blogSlice";
 import {
   Save,
   Image as ImageIcon,
-  Globe,
   Loader2,
   Plus,
   X,
   Home,
-  ArrowLeft
+  ArrowLeft,
+  Images,
+  Trash2,
+  UploadCloud
 } from "lucide-react";
 import QuillEditor from "@/component/admin/Blogs/QuillEditor";
 
@@ -19,13 +21,16 @@ export default function EditBlogPage() {
   const { id } = useParams();
   const router = useRouter();
   const dispatch = useDispatch();
-  
+
   // Redux States
   const { blogs, loading, success, error } = useSelector((state) => state.blog);
 
   // Local States
   const [imagePreview, setImagePreview] = useState(null);
   const [blogImage, setBlogImage] = useState(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [galleryItems, setGalleryItems] = useState([]); // List of {title, file, preview}
+  
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -53,22 +58,87 @@ export default function EditBlogPage() {
         if (blogToEdit.image?.url) {
           setImagePreview(blogToEdit.image.url);
         }
+        // If blog has existing gallery, load it
+        if (blogToEdit.gallery) {
+          setGalleryItems(blogToEdit.gallery.map(img => ({
+            title: img.title || "",
+            preview: img.url,
+            file: null,
+            isExisting: true 
+          })));
+        }
       }
     }
   }, [id, blogs, dispatch]);
 
-  // 2. Handle Success/Error
+  // 2. Handle Global Success/Error
   useEffect(() => {
     if (success) {
       alert("Blog Updated Successfully!");
       dispatch(resetBlogState());
-      router.push("/admin/blogs"); // Redirect back to list
+      router.push("/admin/blogs");
     }
     if (error) {
       alert(error);
       dispatch(resetBlogState());
     }
   }, [success, error, dispatch, router]);
+
+  // Gallery Logic
+  const addGalleryField = () => {
+    setGalleryItems([...galleryItems, { title: "", file: null, preview: "" }]);
+  };
+
+  const removeGalleryField = (index) => {
+    const updated = [...galleryItems];
+    updated.splice(index, 1);
+    setGalleryItems(updated);
+  };
+
+  const updateGalleryItem = (index, key, value) => {
+    const updated = [...galleryItems];
+    if (key === "file") {
+      const file = value;
+      updated[index].file = file;
+      updated[index].preview = URL.createObjectURL(file);
+    } else {
+      updated[index][key] = value;
+    }
+    setGalleryItems(updated);
+  };
+
+  // Separate API call for Gallery
+ // In EditBlogPage.js
+const handleGallerySubmit = async () => {
+  if (galleryItems.length === 0) {
+    alert("Please add at least one item or close the modal.");
+    return;
+  }
+
+  const galleryData = new FormData();
+  
+  galleryItems.forEach((item) => {
+    galleryData.append("titles", item.title); 
+    
+    if (item.file) {
+      galleryData.append("images", item.file);
+    } else if (item.preview) {
+      // If it's an old image, append the URL to 'existingImages'
+      galleryData.append("existingImages", item.preview);
+    }
+  });
+
+  // Dispatch the new action
+  dispatch(updateBlogGalleryAction({ id, formData: galleryData }))
+    .unwrap() // Using unwrap() allows us to handle the promise directly
+    .then(() => {
+      setIsGalleryOpen(false);
+      alert("Slider Gallery Updated Successfully!");
+    })
+    .catch((err) => {
+      alert(`Error: ${err}`);
+    });
+};
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -82,7 +152,6 @@ export default function EditBlogPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!formData.title || !formData.content) {
       alert("Title and Content are required!");
       return;
@@ -94,9 +163,8 @@ export default function EditBlogPage() {
     dataToSend.append("content", formData.content);
     dataToSend.append("category", formData.category);
     dataToSend.append("status", formData.status);
-    dataToSend.append("isFeatured", formData.home_page); // Match controller key
+    dataToSend.append("isFeatured", formData.home_page);
 
-    // Only append image if a new one was selected
     if (blogImage) {
       dataToSend.append("image", blogImage);
     }
@@ -113,7 +181,7 @@ export default function EditBlogPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 p-6 font-sans">
+    <div className="max-w-6xl mx-auto space-y-6 p-6 font-sans relative">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -122,17 +190,28 @@ export default function EditBlogPage() {
           </button>
           <div>
             <h2 className="text-4xl font-black text-slate-900 tracking-tight">Edit Story</h2>
-            <p className="text-slate-500 text-sm font-medium">Update your content and visibility settings.</p>
+            <p className="text-slate-500 text-sm font-medium">Update content and slider gallery.</p>
           </div>
         </div>
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="px-8 py-3 rounded-2xl bg-blue-600 text-white font-black text-sm shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center gap-3 disabled:opacity-70"
-        >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-          {loading ? "Saving Changes..." : "Update Post"}
-        </button>
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            className="px-6 py-3 rounded-2xl bg-slate-100 text-slate-700 font-black text-sm hover:bg-slate-200 transition-all flex items-center gap-2"
+          >
+            <Images size={20} />
+            Manage Gallery
+          </button>
+          
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-8 py-3 rounded-2xl bg-blue-600 text-white font-black text-sm shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center gap-3 disabled:opacity-70"
+          >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+            {loading ? "Saving..." : "Update Post"}
+          </button>
+        </div>
       </div>
 
       <form className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -149,7 +228,7 @@ export default function EditBlogPage() {
               />
             </div>
 
-            {/* Image Upload */}
+            {/* Featured Image */}
             <div>
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Featured Image</label>
               <div className="relative h-64 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-blue-400">
@@ -229,6 +308,86 @@ export default function EditBlogPage() {
           </div>
         </div>
       </form>
+
+      {/* GALLERY MODAL */}
+      {isGalleryOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div className="p-8 border-b border-slate-50 flex justify-between items-center">
+              <div>
+                <h3 className="text-2xl font-black text-slate-900">Slider Gallery</h3>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Add images for the blog slider</p>
+              </div>
+              <button onClick={() => setIsGalleryOpen(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-8 overflow-y-auto space-y-6 flex-1">
+              {galleryItems.map((item, index) => (
+                <div key={index} className="flex items-start gap-4 p-4 bg-slate-50 rounded-[2rem] border border-slate-100 group">
+                  <div className="w-24 h-24 rounded-2xl bg-slate-200 overflow-hidden flex-shrink-0 relative">
+                    {item.preview ? (
+                      <img src={item.preview} className="w-full h-full object-cover" alt="gallery" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <ImageIcon size={24} />
+                      </div>
+                    )}
+                    <input 
+                      type="file" 
+                      className="absolute inset-0 opacity-0 cursor-pointer" 
+                      onChange={(e) => updateGalleryItem(index, "file", e.target.files[0])}
+                    />
+                  </div>
+                  
+                  <div className="flex-1 space-y-3">
+                    <input 
+                      type="text"
+                      placeholder="Image Title..."
+                      value={item.title}
+                      onChange={(e) => updateGalleryItem(index, "title", e.target.value)}
+                      className="w-full px-4 py-2 bg-white rounded-xl border border-slate-200 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <p className="text-[10px] text-slate-400 font-bold ml-1">Click image to upload file</p>
+                  </div>
+
+                  <button 
+                    onClick={() => removeGalleryField(index)}
+                    className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              ))}
+
+              <button 
+                onClick={addGalleryField}
+                className="w-full py-6 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center text-slate-400 hover:border-blue-400 hover:text-blue-500 transition-all bg-slate-50/50"
+              >
+                <Plus size={24} className="mb-1" />
+                <span className="text-xs font-black uppercase">Add New Slide</span>
+              </button>
+            </div>
+
+            <div className="p-8 bg-slate-50 border-t border-slate-100 flex gap-4">
+              <button 
+                onClick={() => setIsGalleryOpen(false)}
+                className="flex-1 py-4 font-black text-slate-500 hover:text-slate-700"
+              >
+                Discard
+              </button>
+              <button 
+                onClick={handleGallerySubmit}
+                className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+              >
+                <UploadCloud size={20} />
+                Save Gallery Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

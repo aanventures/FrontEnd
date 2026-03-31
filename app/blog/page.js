@@ -18,9 +18,9 @@ export default function Blog() {
   }, [dispatch]);
 
   return (
-    <div className="w-full bg-[#FDF8F2]">
+    <div className="w-full bg-[#FDF8F2] pt-[90px]">
       {/* 2. THE MAIN BLOG LIST SECTION */}
-      <div className="container mx-auto -mt-10 relative z-40">
+      <div className="container mx-auto  relative z-40">
         {/* If BlogList handles its own grid and sidebar, keep it as is */}
         {/* Otherwise, pass the blogs and loading state as props */}
         <BlogList blogs={blogs} loading={loading} />

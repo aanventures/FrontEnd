@@ -47,44 +47,44 @@ const FlightResultsContent = () => {
   const children = searchParams.get("children") || 0;
   const infants = searchParams.get("infants") || 0;
 
-  useEffect(() => {
-    const fetchFlights = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/flight/search`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              origin: from,
-              destination: to,
-              departureDate: startDate,
-              returnDate: endDate,
-              passengers: {
-                adults: Number(adults),
-                children: Number(children),
-                infants: Number(infants),
-              },
-            }),
-          }
-        );
+  // useEffect(() => {
+  //   const fetchFlights = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_API_URL}/api/flight/search`,
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             origin: from,
+  //             destination: to,
+  //             departureDate: startDate,
+  //             returnDate: endDate,
+  //             passengers: {
+  //               adults: Number(adults),
+  //               children: Number(children),
+  //               infants: Number(infants),
+  //             },
+  //           }),
+  //         }
+  //       );
 
-        const result = await response.json();
-        if (result.success) {
-          setAllFlights(result.data.flights || []);
-        } else {
-          setError(result.error || "No flights available for this route.");
-        }
-      } catch (err) {
-        setError("Unable to connect to Tripaango Engine.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       const result = await response.json();
+  //       if (result.success) {
+  //         setAllFlights(result.data.flights || []);
+  //       } else {
+  //         setError(result.error || "No flights available for this route.");
+  //       }
+  //     } catch (err) {
+  //       setError("Unable to connect to Tripaango Engine.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    if (from && to) fetchFlights();
-  }, [from, to, startDate, endDate, adults, children, infants]);
+  //   if (from && to) fetchFlights();
+  // }, [from, to, startDate, endDate, adults, children, infants]);
 
   const filteredFlights = useMemo(() => {
     return allFlights.filter((flight) => {

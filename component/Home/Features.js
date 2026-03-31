@@ -22,7 +22,7 @@ export default function Features() {
   ];
 
   return (
-    <section className="py-12 md:py-20 max-w-7xl mx-auto px-6">
+    <section className="max-w-7xl mx-auto px-6">
       {/* Header - Adjusted margins for mobile */}
       <div className="text-center mb-10 md:mb-16">
         <h2 className="text-2xl md:text-4xl font-serif text-[#1A1A1A] mb-3 leading-tight">
@@ -66,7 +66,7 @@ export default function Features() {
          <div className="flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold text-gray-400">
             <span>Powered by</span>
             <span className="text-amber-700 flex items-center gap-1">
-                <span className="italic font-serif capitalize tracking-normal text-xs md:text-sm">AN</span>VENTURES
+                <span className="italic font-serif capitalize tracking-normal text-xs md:text-sm">AAN</span>VENTURES
             </span>
          </div>
          <div className="w-24 md:w-40 h-[1px] bg-gray-200 mt-6 md:mt-8"></div>

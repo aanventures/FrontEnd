@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -21,19 +20,29 @@ export default function HeroSearch() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // --- 1. ROUTING LOGIC ---
-  const getActiveTab = () => {
+  // --- 1. TAB STATE ---
+  const [activeTab, setActiveTab] = useState(() => {
     if (pathname.includes("/hotels")) return "Hotels";
-    // if (pathname.includes("/cars")) return "Cars";
+    if (pathname.includes("/cars")) return "Cars";
     return "Flights";
-  };
-  const activeTab = getActiveTab();
+  });
 
-  // --- 2. STATE MANAGEMENT ---
+  // Sync state if URL changes externally
+  useEffect(() => {
+    if (pathname.includes("/hotels")) setActiveTab("Hotels");
+    else if (pathname.includes("/cars")) setActiveTab("Cars");
+    else setActiveTab("Flights");
+  }, [pathname]);
+
+  // --- 2. INPUT STATE ---
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
+  
+  // Date Logic: Single date for Flights, Range for Hotels & Cars
+  const [singleDate, setSingleDate] = useState(new Date());
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+
   const [monthsShown, setMonthsShown] = useState(2);
   const [showGuests, setShowGuests] = useState(false);
   const [counts, setCounts] = useState({ adults: 1, children: 0, infants: 0 });
@@ -41,9 +50,7 @@ export default function HeroSearch() {
 
   // --- 3. EFFECTS ---
   useEffect(() => {
-    const handleResize = () => {
-      setMonthsShown(window.innerWidth < 1024 ? 1 : 2);
-    };
+    const handleResize = () => setMonthsShown(window.innerWidth < 1024 ? 1 : 2);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -51,9 +58,7 @@ export default function HeroSearch() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (guestRef.current && !guestRef.current.contains(event.target)) {
-        setShowGuests(false);
-      }
+      if (guestRef.current && !guestRef.current.contains(event.target)) setShowGuests(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -71,17 +76,6 @@ export default function HeroSearch() {
 
   const totalGuests = counts.adults + counts.children + counts.infants;
 
-// --- 5. SEARCH HANDLER ---
-const handleSearch = () => {
-  // 1. Validation: Prevent search if essential data is missing
-  if (!origin || !destination || !startDate) {
-    alert("Please select origin, destination, and departure date.");
-    return;
-  }
-
-  const params = new URLSearchParams();
-
-  // Helper to format Date object to YYYY-MM-DD correctly
   const formatDate = (date) => {
     if (!date) return null;
     const year = date.getFullYear();
@@ -90,160 +84,171 @@ const handleSearch = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // 2. Add Dates (MMT and your API expect YYYY-MM-DD)
-  const formattedStart = formatDate(startDate);
-  const formattedEnd = formatDate(endDate);
-  
-  if (formattedStart) params.append("startDate", formattedStart);
-  if (formattedEnd) params.append("endDate", formattedEnd);
-  
-  // 3. Add Traveler Counts
-  params.append("adults", String(counts.adults));
-  params.append("children", String(counts.children));
-  params.append("infants", String(counts.infants));
+  // --- 5. SEARCH HANDLER ---
+  const handleSearch = () => {
+    const params = new URLSearchParams();
 
-  // 4. Determine Path and Specific Params
-  let targetPath = "/flights";
-
-  if (activeTab === "Flights") {
-    targetPath = "/flights";
-    // We trim and lowercase to ensure consistency in the Cache/DB
-    params.append("from", origin.trim());
-    params.append("to", destination.trim());
-  } else if (activeTab === "Hotels") {
-    targetPath = "/hotels";
-    params.append("location", origin.trim());
-  }
-
-  // 5. Execute Redirect
-  // This will result in: /flights?startDate=2026-03-25&endDate=2026-03-26&adults=1&from=bangalore&to=patna
-  router.push(`${targetPath}?${params.toString()}`);
-};
+    if (activeTab === "Flights") {
+      if (!origin || !destination || !singleDate) {
+        alert("Please select origin, destination, and departure date.");
+        return;
+      }
+      params.append("from", origin.trim());
+      params.append("to", destination.trim());
+      params.append("startDate", formatDate(singleDate));
+      router.push(`/flights?${params.toString()}`);
+    } 
+    else if (activeTab === "Hotels") {
+      if (!origin || !startDate || !endDate) {
+        alert("Please select destination and check-in/out dates.");
+        return;
+      }
+      params.append("location", origin.trim());
+      params.append("startDate", formatDate(startDate));
+      params.append("endDate", formatDate(endDate));
+      params.append("adults", String(counts.adults));
+      params.append("children", String(counts.children));
+      router.push(`/hotels?${params.toString()}`);
+    }
+    else if (activeTab === "Cars") {
+      if (!origin || !startDate || !endDate) {
+        alert("Please select pick-up location and rental dates.");
+        return;
+      }
+      params.append("pickup", origin.trim());
+      params.append("startDate", formatDate(startDate));
+      params.append("endDate", formatDate(endDate));
+      router.push(`/cars?${params.toString()}`);
+    }
+  };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-2 md:px-4">
-      {/* Tab Selectors - Made smaller on mobile */}
+    <div className="w-full max-w-6xl mx-auto px-2 md:px-4 font-montserrat">
+      {/* 1. TAB SELECTORS */}
       <div className="flex gap-1.5 mb-3 justify-center lg:justify-start overflow-x-auto pb-1 no-scrollbar">
         {[
-          { name: "Flights", path: "/flights", icon: <Plane size={14} /> },
-          { name: "Hotels", path: "/hotels", icon: <Hotel size={14} /> },
+          { name: "Flights", icon: <Plane size={14} /> },
+          { name: "Hotels", icon: <Hotel size={14} /> },
+          { name: "Cars", icon: <Car size={14} /> },
         ].map((tab) => (
-          <Link
+          <button
             key={tab.name}
-            href={tab.path}
-            className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all flex items-center gap-2 whitespace-nowrap border border-transparent ${
+            onClick={() => setActiveTab(tab.name)}
+            className={`px-5 py-2 rounded-full text-[11px] font-black transition-all flex items-center gap-2 whitespace-nowrap border ${
               activeTab === tab.name
-                ? "bg-white text-slate-900 shadow-md border-white"
-                : "bg-black/20 text-white hover:bg-black/30"
+                ? "bg-white text-slate-900 shadow-lg border-white"
+                : "bg-black/30 text-white border-transparent hover:bg-black/40"
             }`}
           >
             {tab.icon}
-            {tab.name}
-          </Link>
+            {tab.name.toUpperCase()}
+          </button>
         ))}
       </div>
 
-      {/* Main Search Container - Reduced padding and rounding for mobile */}
-      <div className="bg-white/95 backdrop-blur-md p-1.5 rounded-[1.5rem] lg:rounded-full flex flex-col lg:flex-row items-center shadow-2xl w-full border border-white/20">
+      {/* 2. MAIN SEARCH BOX */}
+      <div className="bg-white/95 backdrop-blur-md p-2 rounded-[2rem] lg:rounded-full flex flex-col lg:flex-row items-center shadow-2xl w-full border border-white/20">
         
-        {/* Input 1: From / Location */}
-        <div className="flex-1 flex items-center px-4 py-2 md:py-3 border-b lg:border-b-0 lg:border-r border-gray-100 w-full group">
-          {activeTab === "Hotels" ? (
-            <MapPin className="text-gray-400 mr-2 group-hover:text-[#C29263]" size={16} />
-          ) : (
-            <Plane className="text-gray-400 mr-2 group-hover:text-[#C29263]" size={16} />
-          )}
+        {/* Location Input (Used for From, Hotel Destination, or Car Pick-up) */}
+        <div className="flex-1 flex items-center px-5 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 w-full group">
+          <MapPin className="text-slate-400 mr-3 group-hover:text-amber-600" size={18} />
           <div className="flex flex-col items-start w-full">
-            <span className="text-[9px] font-bold uppercase text-gray-400 leading-tight">
-              {activeTab === "Hotels" ? "Destination" : "From"}
+            <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-tight">
+              {activeTab === "Hotels" ? "Location" : activeTab === "Cars" ? "Pick-up Location" : "From"}
             </span>
             <input
               type="text"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              placeholder={activeTab === "Hotels" ? "Where to?" : "City/Airport"}
-              className="bg-transparent outline-none text-gray-800 w-full text-sm font-bold placeholder:text-gray-400"
+              placeholder={activeTab === "Flights" ? "Enter City" : "Where to?"}
+              className="bg-transparent outline-none text-slate-900 w-full text-sm font-bold placeholder:text-slate-300"
             />
           </div>
         </div>
 
-        {/* Input 2: To (Hidden for Hotels) */}
-        {activeTab !== "Hotels" && (
-          <div className="flex-1 flex items-center px-4 py-2 md:py-3 border-b lg:border-b-0 lg:border-r border-gray-100 w-full group">
-            <MapPin className="text-gray-400 mr-2 group-hover:text-[#C29263]" size={16} />
+        {/* Destination Input (Only for Flights) */}
+        {activeTab === "Flights" && (
+          <div className="flex-1 flex items-center px-5 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 w-full group">
+            <Plane className="text-slate-400 mr-3 group-hover:text-amber-600 rotate-90" size={18} />
             <div className="flex flex-col items-start w-full">
-              <span className="text-[9px] font-bold uppercase text-gray-400 leading-tight">To</span>
+              <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-tight">To</span>
               <input
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder="Destination"
-                className="bg-transparent outline-none text-gray-800 w-full text-sm font-bold placeholder:text-gray-400"
+                placeholder="Enter Destination"
+                className="bg-transparent outline-none text-slate-900 w-full text-sm font-bold placeholder:text-slate-300"
               />
             </div>
           </div>
         )}
 
-        {/* Date Picker */}
-        <div className="flex-1 flex items-center px-4 py-2 md:py-3 border-b lg:border-b-0 lg:border-r border-gray-100 w-full group">
-          <Calendar className="text-gray-400 mr-2 group-hover:text-[#C29263]" size={16} />
+        {/* Date Section */}
+        <div className="flex-1 flex items-center px-5 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 w-full group">
+          <Calendar className="text-slate-400 mr-3 group-hover:text-amber-600" size={18} />
           <div className="flex flex-col items-start flex-1 w-full">
-            <span className="text-[9px] font-bold uppercase text-gray-400 leading-tight">
-              {activeTab === "Flights" ? "Dates" : "Duration"}
+            <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-tight">
+              {activeTab === "Flights" ? "Departure" : activeTab === "Cars" ? "Rental Period" : "Check-in & Out"}
             </span>
             <DatePicker
-              selectsRange
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(update) => setDateRange(update)}
+              selected={activeTab === "Flights" ? singleDate : null}
+              selectsRange={activeTab !== "Flights"}
+              startDate={activeTab !== "Flights" ? startDate : null}
+              endDate={activeTab !== "Flights" ? endDate : null}
+              onChange={(update) => {
+                if (activeTab === "Flights") setSingleDate(update);
+                else setDateRange(update);
+              }}
               monthsShown={monthsShown}
-              placeholderText="Select range"
-              className="bg-transparent outline-none text-gray-800 w-full text-sm font-bold cursor-pointer"
-              dateFormat="dd MMM"
+              placeholderText={activeTab === "Flights" ? "Select Date" : "Pick-up - Drop-off"}
+              className="bg-transparent outline-none text-slate-900 w-full text-sm font-bold cursor-pointer"
+              dateFormat="dd MMM, yyyy"
               minDate={new Date()}
             />
           </div>
         </div>
 
-        {/* Guest Dropdown */}
-        <div className="flex-1 relative w-full" ref={guestRef}>
-          <div
-            onClick={() => setShowGuests(!showGuests)}
-            className="flex items-center px-4 py-2 md:py-3 border-b lg:border-b-0 lg:border-r border-gray-100 w-full group cursor-pointer"
-          >
-            <Users className="text-gray-400 mr-2 group-hover:text-[#C29263]" size={16} />
-            <div className="flex flex-col items-start flex-1">
-              <span className="text-[9px] font-bold uppercase text-gray-400 leading-tight">Travelers</span>
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-bold text-gray-800">
-                  {totalGuests} {totalGuests > 1 ? "People" : "Person"}
-                </span>
-                <ChevronDown size={12} className={`text-gray-400 transition-transform ${showGuests ? "rotate-180" : ""}`} />
+        {/* Travelers/Guests (Hidden for Cars usually, but keeping available if needed) */}
+        {activeTab !== "Cars" && (
+          <div className="flex-1 relative w-full" ref={guestRef}>
+            <div
+              onClick={() => setShowGuests(!showGuests)}
+              className="flex items-center px-5 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 w-full group cursor-pointer"
+            >
+              <Users className="text-slate-400 mr-3 group-hover:text-amber-600" size={18} />
+              <div className="flex flex-col items-start flex-1">
+                <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-tight">Travelers</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-bold text-slate-900">
+                    {totalGuests} {totalGuests > 1 ? "Travelers" : "Traveler"}
+                  </span>
+                  <ChevronDown size={14} className={`text-slate-400 transition-transform ${showGuests ? "rotate-180" : ""}`} />
+                </div>
               </div>
             </div>
+
+            {showGuests && (
+              <div className="absolute top-full left-0 lg:left-auto lg:right-0 mt-4 w-full sm:w-80 bg-white rounded-3xl shadow-2xl p-6 border border-slate-50 z-[1000] animate-in fade-in zoom-in duration-200">
+                <div className="space-y-6">
+                  <CounterRow label="Adults" sub="12+ Years" count={counts.adults} onDec={() => updateCount("adults", "dec")} onInc={() => updateCount("adults", "inc")} />
+                  <CounterRow label="Children" sub="2-12 Years" count={counts.children} onDec={() => updateCount("children", "dec")} onInc={() => updateCount("children", "inc")} />
+                  <CounterRow label="Infants" sub="Under 2 Years" count={counts.infants} onDec={() => updateCount("infants", "dec")} onInc={() => updateCount("infants", "inc")} />
+                </div>
+                <button onClick={() => setShowGuests(false)} className="w-full mt-6 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-amber-600 transition-colors shadow-lg shadow-slate-200">
+                  Apply Selection
+                </button>
+              </div>
+            )}
           </div>
+        )}
 
-          {showGuests && (
-            <div className="absolute top-full left-0 lg:left-auto lg:right-0 mt-2 w-full sm:w-72 bg-white rounded-2xl shadow-2xl p-4 border border-gray-100 z-[100] animate-in fade-in zoom-in duration-200">
-              <div className="space-y-4">
-                <CounterRow label="Adults" sub="12+" count={counts.adults} onDec={() => updateCount("adults", "dec")} onInc={() => updateCount("adults", "inc")} />
-                <CounterRow label="Children" sub="2-12" count={counts.children} onDec={() => updateCount("children", "dec")} onInc={() => updateCount("children", "inc")} />
-                <CounterRow label="Infants" sub="Under 2" count={counts.infants} onDec={() => updateCount("infants", "dec")} onInc={() => updateCount("infants", "inc")} />
-              </div>
-              <button onClick={() => setShowGuests(false)} className="w-full mt-4 py-2.5 bg-[#1D3178] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-colors">
-                Apply
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Search Button - Smaller padding on mobile */}
-        <div className="w-full lg:w-auto p-1">
+        {/* Search Button */}
+        <div className="w-full lg:w-auto p-1.5">
           <button
             onClick={handleSearch}
-            className="bg-gradient-to-r from-[#C29263] to-[#A67C52] text-white px-8 py-3.5 lg:py-5 rounded-full lg:rounded-full w-full font-bold uppercase text-[10px] lg:text-xs tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
+            className="bg-amber-600 hover:bg-slate-900 text-white px-10 py-4 lg:py-6 rounded-full lg:rounded-full w-full font-black uppercase text-xs tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl shadow-amber-600/20 active:scale-95 transition-all"
           >
-            <Search size={16} /> Search
+            <Search size={20} strokeWidth={3} /> SEARCH
           </button>
         </div>
       </div>
@@ -255,27 +260,27 @@ function CounterRow({ label, sub, count, onInc, onDec }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
-        <span className="text-sm font-bold text-gray-800">{label}</span>
-        <span className="text-[10px] text-gray-400">{sub}</span>
+        <span className="text-sm font-black text-slate-900">{label}</span>
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{sub}</span>
       </div>
       <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={onDec}
-          className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition-all active:scale-90 disabled:opacity-30"
+          className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center hover:bg-slate-50 text-slate-900 transition-all active:scale-90 disabled:opacity-20"
           disabled={label === "Adults" ? count <= 1 : count <= 0}
         >
-          <Minus size={14} />
+          <Minus size={16} strokeWidth={3} />
         </button>
-        <span className="text-sm font-bold text-gray-800 w-4 text-center">
+        <span className="text-base font-black text-slate-900 w-6 text-center">
           {count}
         </span>
         <button
           type="button"
           onClick={onInc}
-          className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition-all active:scale-90"
+          className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center hover:bg-slate-50 text-slate-900 transition-all active:scale-90"
         >
-          <Plus size={14} />
+          <Plus size={16} strokeWidth={3} />
         </button>
       </div>
     </div>

@@ -6,48 +6,53 @@ import BlogSection from "@/component/Home/BlogCard";
 
 export default function Home() {
   return (
-    <main className="bg-[#FAF7F2] min-h-screen">
+    <main className="bg-[#FAF7F2] min-h-screen pt-[90px]">
       {/* HERO SECTION */}
-      {/* Changed: h-[500px] on mobile, h-[650px] on medium screens and up */}
-      <section className="relative h-[550px] md:h-[650px] w-full overflow-hidden ">
-        {/* Main Background Image */}
+      <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
+        {/* 1. Main Background Image */}
         <Image
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1600"
+          src="/Home/banner2.jpeg"
           alt="Coastal View"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
 
-        {/* Decorative Wave Overlay */}
+        {/* 2. DARK OVERLAY (SCRIM) 
+           This makes sure the white text is visible even if the image is bright at the top */}
+        <div className="absolute inset-0 bg-black/30 z-10"></div>
+
+        {/* 3. Decorative Wave Overlay */}
         <div
-          className="absolute bottom-0 left-0 w-full h-16 md:h-24 bg-[#FAF7F2] z-10"
+          className="absolute bottom-0 left-0 w-full h-16 md:h-24 bg-[#FAF7F2] z-30"
           style={{ clipPath: "ellipse(80% 100% at 50% 100%)" }}
         ></div>
 
-        {/* Content Container */}
-        <div className="relative pt-[100px] z-20 flex flex-col items-center justify-center h-full text-white text-center px-6">
-          {/* Changed: text-3xl for mobile, text-5xl for tablet, text-7xl for desktop */}
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif mb-4 drop-shadow-md leading-tight">
+        {/* 4. Content Container 
+           Added: pt-32 to push content below the fixed navbar */}
+        <div className="relative z-20 flex flex-col items-center justify-center h-full text-white text-center px-6 pt-0 md:pt-40">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif  md:mb-4 drop-shadow-lg leading-tight">
             Your Journey, Your Way
           </h1>
 
-          {/* Changed: smaller text and reduced margin on mobile */}
-          <p className="text-lg md:text-xl font-light mb-6 md:mb-10 opacity-90 tracking-wide">
+          <p className="text-lg md:text-2xl font-light mb-5 md:mb-12 opacity-95 tracking-wide drop-shadow-md">
             Flights, Hotels & Cars – All in One Place
           </p>
 
-          {/* Hero Search - Ensure the component itself is responsive internally! */}
-          <div className="w-full max-w-5xl">
+          {/* Hero Search */}
+          <div className="w-full max-w-5xl ">
             <HeroSearch />
           </div>
         </div>
       </section>
 
-      <div className="pt-20 sm:pt-0">
+      <div className="">
         <CategoryCards />
-        <Features />
-        <BlogSection />
+        <div className="py-12 md:py-20 space-y-20">
+          <Features />
+          <BlogSection />
+        </div>
       </div>
     </main>
   );
