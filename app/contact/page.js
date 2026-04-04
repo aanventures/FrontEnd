@@ -8,7 +8,7 @@ export default function ContactUs() {
     <div className="min-h-screen bg-[#FAF7F2] font-montserrat text-slate-900 pt-[90px]">
       
       {/* 1. REFINED HERO SECTION */}
-      <section className="relative h-[450px] md:h-[550px] w-full bg-slate-900 overflow-hidden">
+      <section className="relative  h-[200px] md:h-[250px] w-full bg-slate-900 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&q=80&w=1600"
           alt="Contact Hero"
@@ -20,7 +20,7 @@ export default function ContactUs() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent z-10" />
 
         <div className="relative z-20 container mx-auto px-6 h-full flex flex-col justify-center items-center text-center">
-          <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase italic">
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">
             Contact <span className="text-amber-500 not-italic">Us</span>
           </h1>
           <p className="text-amber-500 font-black uppercase tracking-[0.2em] text-[10px] md:text-xs mt-3">
@@ -28,18 +28,7 @@ export default function ContactUs() {
           </p>
         </div>
 
-        <div className="absolute bottom-[-1px] left-0 w-full z-30 leading-[0]">
-          <svg
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-            className="w-full h-[50px] md:h-[80px]"
-          >
-            <path
-              d="M0 120L1440 120V60C1440 60 1140 0 720 0C300 0 0 60 0 60V120Z"
-              fill="#FAF7F2"
-            />
-          </svg>
-        </div>
+      
       </section>
 
       {/* 2. CONTACT CONTENT */}

@@ -50,7 +50,7 @@ export default function BlogSection() {
       </div>
 
       {/* Main Carousel Card */}
-      <div className="relative bg-white/80 backdrop-blur-md rounded-[2rem] shadow-sm border border-white flex flex-col md:flex-row min-h-fit md:min-h-[420px] overflow-hidden">
+      <div className="relative bg-[#FAF7F2] backdrop-blur-md rounded-[2rem] shadow-sm border border-white flex flex-col md:flex-row min-h-fit md:min-h-[420px] overflow-hidden">
         {/* Image Container */}
         <div className="p-3 md:p-4 w-full md:w-5/12">
           <div className="relative h-[220px] md:h-full w-full rounded-2xl overflow-hidden">

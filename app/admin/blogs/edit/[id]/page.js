@@ -29,7 +29,8 @@ export default function EditBlogPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [blogImage, setBlogImage] = useState(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [galleryItems, setGalleryItems] = useState([]); // List of {title, file, preview}
+  const [galleryItems, setGalleryItems] = useState([]); 
+  console.log(blogs)
   
   const [formData, setFormData] = useState({
     title: "",

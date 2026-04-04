@@ -8,7 +8,7 @@ export default function AboutUs() {
     <div className="min-h-screen bg-[#FAF7F2] font-montserrat text-slate-900 pt-[90px]">
       
       {/* 1. COMPACT HERO SECTION */}
-      <section className="relative h-[400px] md:h-[500px] w-full bg-slate-900 overflow-hidden">
+      <section className="relative h-[200px] md:h-[250px] w-full bg-slate-900 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=1600"
           alt="Cityscape"
@@ -17,28 +17,28 @@ export default function AboutUs() {
           priority
         />
         
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          <div className="absolute top-[10%] left-[-10%] w-[120%] h-[100%] border-t border-amber-500/30 rounded-[100%]" />
-        </div>
+          {/* <div className="absolute inset-0 z-10 pointer-events-none">
+            <div className="absolute top-[10%] left-[-10%] w-[120%] h-[100%] border-t border-amber-500/30 rounded-[100%]" />
+          </div> */}
 
         <div className="relative z-20 container mx-auto px-6 h-full flex flex-col justify-center items-center text-center">
-          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
-            Our <span className="text-amber-500 not-italic">Story</span>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">
+            About  <span className="text-amber-500 not-italic">Us</span>
           </h1>
-          <p className="text-amber-500 font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px] mt-3">
+          {/* <p className="text-amber-500 font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px] mt-3">
             Redefining the way you discover the world
-          </p>
+          </p> */}
         </div>
 
-        <div className="absolute bottom-[-1px] left-0 w-full z-30 leading-[0]">
+        {/* <div className="absolute bottom-[-1px] left-0 w-full z-30 leading-[0]">
           <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[50px] md:h-[80px]">
             <path d="M0 120L1440 120V60C1440 60 1140 0 720 0C300 0 0 60 0 60V120Z" fill="#FAF7F2" />
           </svg>
-        </div>
+        </div> */}
       </section>
 
       {/* 2. CONTENT SECTION */}
-      <main className="container mx-auto px-4 md:px-6 max-w-5xl py-12 md:py-20">
+      <main className="container mx-auto px-4 md:px-6 max-w-5xl  md:py-20">
         
         {/* Intro Header */}
         <div className="text-center mb-12 md:mb-16">

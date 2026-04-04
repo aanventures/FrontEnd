@@ -23,7 +23,7 @@ const BlogPage = () => {
 
       <div className="min-h-screen bg-[#FDF8F2] text-[#2C2C2C] font-montserrat overflow-x-hidden">
         {/* --- ADJUSTED HERO SECTION --- */}
-        <section className="relative h-[500px] md:h-[650px] w-full bg-slate-900 overflow-hidden">
+        <section className="relative h-[200px] md:h-[250px] w-full bg-slate-900 overflow-hidden">
           <Image
             src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1600"
             alt="Hero Background"
@@ -32,24 +32,26 @@ const BlogPage = () => {
             priority
           />
 
+          
+
           {/* Enhanced Dark Overlay for better text visibility */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent z-10" />
 
           <div className="relative z-20 container mx-auto px-6 md:px-10 h-full flex flex-col justify-center items-center text-center">
-            <h1 className="text-4xl sm:text-4xl md:text-7xl text-white mb-6 leading-tight font-black tracking-tighter">
+            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">
               Explore{" "}
-              <span className="text-amber-500 italic font-serif font-light">
+              <span className="text-amber-500 italic font-serif">
                 Travel Stories
               </span>
             </h1>
-            <p className="text-lg md:text-2xl text-gray-200 font-medium max-w-2xl drop-shadow-md">
+            <p className="text-lg md:text-xl text-gray-200 font-medium max-w-2xl drop-shadow-md">
               Discover destinations, expert tips, and hidden gems before you
               travel.
             </p>
           </div>
 
           {/* Golden Wave Design - Adjusted height for better transition */}
-          <div className="absolute bottom-0 left-0 w-full leading-[0] z-30">
+          {/* <div className="absolute bottom-0 left-0 w-full leading-[0] z-30">
             <svg
               viewBox="0 0 1440 100"
               fill="none"
@@ -61,7 +63,7 @@ const BlogPage = () => {
                 fill="#FDF8F2"
               />
             </svg>
-          </div>
+          </div> */}
         </section>
 
         {/* --- CONTENT AREA --- */}

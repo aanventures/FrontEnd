@@ -39,36 +39,27 @@ export default function TermsConditions() {
   ];
 
   return (
-    <main className="bg-[#FAF7F2] min-h-screen font-montserrat text-slate-900 overflow-x-hidden">
+    <main className="bg-[#FAF7F2] min-h-screen font-montserrat text-slate-900 overflow-x-hidden pt-20">
       
       {/* 1. BRANDED HERO IMAGE - CENTERED CONTENT */}
-      <section className="relative w-full h-[60vh] md:h-[75vh] bg-slate-900 flex items-center justify-center overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1600"
-          alt="Legal Header"
-          fill
-          className="object-cover opacity-40"
-          priority
-        />
+      <section className="relative w-full h-[200px] md:h-[250px] bg-slate-900 flex items-center justify-center overflow-hidden">
+             <Image
+                 src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80&w=1600"
+                 alt="Privacy Header"
+                 fill
+                 className="object-cover opacity-60" // Kept high so it's bright
+                 priority
+               />
         
         {/* Subtle Scrim for Contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent z-10" />
-
-        {/* Back Button - Top Left Over Image */}
-        <div className="absolute top-32 left-6 md:left-12 z-30">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-all font-black uppercase text-[10px] tracking-[0.3em] bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10"
-          >
-            <ArrowLeft size={14} strokeWidth={3} /> Back to Home
-          </Link>
-        </div>
+       
 
         {/* CENTERED HEADER CONTENT */}
         <header className="relative z-20 text-center px-6">
         
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase italic leading-none m-0">
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">
             Terms &{" "}
             <span className="text-amber-500 not-italic">Conditions</span>
           </h1>
@@ -78,12 +69,7 @@ export default function TermsConditions() {
           </p>
         </header>
 
-        {/* Wave Transition (Optional, keeps the design consistent with other pages) */}
-        <div className="absolute bottom-[-1px] left-0 w-full z-30 leading-[0]">
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[60px] md:h-[100px]">
-            <path d="M0 120L1440 120V60C1440 60 1140 0 720 0C300 0 0 60 0 60V120Z" fill="#FAF7F2" />
-          </svg>
-        </div>
+       
       </section>
 
       {/* 2. TERMS CONTENT AREA */}
@@ -109,34 +95,7 @@ export default function TermsConditions() {
           ))}
         </div>
 
-        {/* 3. HELP FOOTER */}
-        <div className="mt-16 pt-12 border-t border-slate-100 text-center">
-          <div className="bg-slate-900 p-8 md:p-12 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
-            <FileSignature
-              size={120}
-              className="absolute -right-10 -bottom-10 text-white/5 rotate-12"
-            />
-
-            <MessageCircleQuestion
-              size={40}
-              className="mx-auto mb-6 text-amber-500"
-              strokeWidth={2.5}
-            />
-            <h3 className="text-2xl md:text-3xl font-black mb-3 tracking-tighter">
-              Need Clarification?
-            </h3>
-            <p className="text-slate-400 text-xs md:text-sm font-bold max-w-md mx-auto mb-10 uppercase tracking-wide">
-              If you have any questions regarding these terms, please contact
-              us before proceeding with your booking.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-block bg-amber-600 text-white px-12 py-4 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all shadow-xl shadow-amber-600/20 active:scale-95"
-            >
-              Contact Support Team
-            </Link>
-          </div>
-        </div>
+    
       </section>
     </main>
   );

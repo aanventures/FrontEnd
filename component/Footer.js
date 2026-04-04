@@ -43,7 +43,7 @@ export default function Footer() {
     <footer className="bg-slate-900 text-slate-300 pt-12 md:pt-20 pb-8 ">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* --- Top Section --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 pb-12 md:pb-16 border-b border-slate-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 pb-12 md:pb-10 border-b border-slate-800">
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-6 text-center sm:text-left">
             <Link
@@ -51,13 +51,11 @@ export default function Footer() {
               className="group flex flex-col items-start leading-tight"
             >
               <img
-                src="/images/logo2.png"
+                src="/images/logo101.png"
                 alt="Tripaango Logo"
-                className="h-8 md:h-10 w-auto object-contain mx-auto sm:mx-0"
+                className="h-8 md:h-[90px] w-auto object-contain mx-auto sm:mx-0"
               />
-              <span className="text-[7px] md:text-[9px] uppercase tracking-[0.25em] text-white/50 font-medium mt-2 mx-auto sm:mx-0">
-                Discover, Relax, and Go Beyond
-              </span>
+             
             </Link>
             <div className="space-y-4">
               {/* Logo here */}
@@ -153,7 +151,7 @@ export default function Footer() {
         </div>
 
         {/* --- Newsletter Section --- */}
-        <div className="py-10 md:py-12 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 border-b border-slate-800/50">
+        <div className="py-10 md:py-5 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 border-b border-slate-800/50">
           <div className="text-center lg:text-left space-y-2">
             <h3 className="text-lg md:text-xl font-bold text-white">
               Subscribe to our newsletter

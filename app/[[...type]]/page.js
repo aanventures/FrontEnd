@@ -6,9 +6,9 @@ import BlogSection from "@/component/Home/BlogCard";
 
 export default function Home() {
   return (
-    <main className="bg-[#FAF7F2] min-h-screen pt-[90px]">
+    <main className="bg-white min-h-screen pt-[90px]">
       {/* HERO SECTION */}
-      <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
+      <section className="relative h-[600px] md:h-[600px] w-full overflow-hidden">
         {/* 1. Main Background Image */}
         <Image
           src="/Home/banner2.jpeg"
@@ -24,14 +24,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/30 z-10"></div>
 
         {/* 3. Decorative Wave Overlay */}
-        <div
+        {/* <div
           className="absolute bottom-0 left-0 w-full h-16 md:h-24 bg-[#FAF7F2] z-30"
           style={{ clipPath: "ellipse(80% 100% at 50% 100%)" }}
-        ></div>
+        ></div> */}
 
         {/* 4. Content Container 
            Added: pt-32 to push content below the fixed navbar */}
-        <div className="relative z-20 flex flex-col items-center justify-center h-full text-white text-center px-6 pt-0 md:pt-40">
+        <div className="relative z-20 flex flex-col items-center justify-center h-full text-white text-center px-6">
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif  md:mb-4 drop-shadow-lg leading-tight">
             Your Journey, Your Way
           </h1>
@@ -48,10 +48,13 @@ export default function Home() {
       </section>
 
       <div className="">
-        <CategoryCards />
+       <div className="">
+         <CategoryCards />
+       </div>
         <div className="py-12 md:py-20 space-y-20">
+            <BlogSection />
           <Features />
-          <BlogSection />
+        
         </div>
       </div>
     </main>

@@ -58,30 +58,30 @@ export default function Navigation() {
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out flex items-center font-montserrat ${
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out flex items-center font-montserrat overflow-hidden ${
           isScrolled
-            ? "h-20 bg-white/95 backdrop-blur-lg shadow-md border-b border-slate-200"
-            : "h-24 bg-transparent"
+            ? "h-24 bg-white  border-b border-slate-200"
+            : "h-24 bg-white"
         }`}
       >
-        <div className="max-w-[1440px] w-full mx-auto px-4 md:px-8">
+        <div className="max-w-[1440px] w-full mx-auto">
           <div className="flex items-center justify-between h-full">
             
             {/* Logo Section */}
             <Link
               href="/"
-              className="group flex flex-col items-start leading-tight relative z-[60]"
+              className="group flex flex-col items-start  relative z-[60]"
             >
               <img 
-                src="/images/logo2.png" 
+                src="/images/logo101.png" 
                 alt="Logo" 
-                className={`transition-all duration-500 h-6 md:h-8 w-auto object-contain ${isScrolled ? "brightness-0" : "brightness-0 md:brightness-100"}`} 
+                className={`transition-all duration-500 md:h-[130px] w-auto object-contain`} 
               />
-              <span className={`text-[6px] md:text-[8px] uppercase tracking-[0.2em] font-black whitespace-nowrap transition-all duration-500 mt-1 ${
+              {/* <span className={`text-[6px] md:text-[8px] uppercase tracking-[0.2em] font-black whitespace-nowrap transition-all duration-500 mt-1 ${
                 isScrolled ? "text-slate-500" : "text-slate-600"
               }`}>
                 Discover, Relax, and <span className="text-amber-600">Go Beyond</span>
-              </span>
+              </span> */}
             </Link>
 
             {/* Desktop Navigation - MODIFIED TO BE BOLDER */}
@@ -94,8 +94,8 @@ export default function Navigation() {
                     href={link.href}
                     className={`relative text-[12px] font-black uppercase tracking-[0.15em] transition-colors duration-300 group py-1 ${
                       isScrolled 
-                        ? (isActive ? "text-amber-600" : "text-slate-900 hover:text-amber-600")
-                        : (isActive ? "text-amber-600" : "text-slate-800 hover:text-amber-600")
+                        ? (isActive ? "text-[#1F4165]" : "text-slate-900 hover:text-amber-600")
+                        : (isActive ? "text-[#1F4165]" : "text-slate-800 hover:text-amber-600")
                     }`}
                   >
                     {link.label}
