@@ -39,7 +39,7 @@ export default function BlogSection() {
   const blog = blogs[currentIndex];
 
   return (
-    <section className="max-w-6xl mx-auto px-4 md:px-6 pb-10 bg-transparent font-montserrat">
+    <section className="max-w-6xl mx-auto px-4 md:px-6  bg-transparent font-montserrat">
       {/* Section Header */}
       <div className="flex items-center justify-center gap-3 md:gap-4 mb-8 md:mb-12">
         <div className="h-[1px] bg-slate-200 w-full max-w-[40px] md:max-w-[100px]"></div>

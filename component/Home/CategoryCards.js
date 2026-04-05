@@ -7,7 +7,6 @@ const categories = [
   {
     title: "Flights",
     desc: "Find your perfect flight.",
-    // Swapped image for Lucide Component
     icon: <Plane className="w-6 h-6 md:w-8 md:h-8 text-amber-700" />,
     link: "/flights",
     btnText: "Explore Flights",
@@ -30,21 +29,21 @@ const categories = [
 
 export default function CategoryCards() {
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-6 relative  font-montserrat pt-5">
-      {/* Subtitle */}
-      {/* <h1 className="text-center text-xl md:text-3xl font-serif text-[#1A1A1A] whitespace-nowrap font-black">
-        Find the perfect flight, stay, or ride — effortlessly
-      </h1> */}
-        <div className="flex items-center justify-center gap-3 md:gap-4 mb-8 md:mb-12">
-        <div className="h-[1px] bg-slate-200 w-full max-w-[40px] md:max-w-[100px]"></div>
-        <h1 className="text-xl md:text-3xl font-serif text-[#1A1A1A] whitespace-nowrap font-black">
-          Find the perfect flight, stay, or ride — effortlessly
-        </h1>
-        <div className="h-[1px] bg-slate-200 w-full max-w-[40px] md:max-w-[100px]"></div>
+    <section className="max-w-7xl mx-auto px-4 md:px-6 relative font-montserrat pt-10 md:pt-16">
+      <div className="flex items-center justify-center gap-2 md:gap-6 mb-8 md:mb-12 px-4 w-full">
+        <div className="flex-1 h-[1px] bg-slate-200 max-w-[40px] md:max-w-[150px]"></div>
+        <h2 className="text-lg sm:text-xl md:text-3xl font-serif text-[#1A1A1A] font-black text-center leading-tight shrink-0">
+          Find the perfect flight, stay, or ride
+          <span className="hidden sm:inline"> — </span>
+          <br className="sm:hidden" />
+          effortlessly
+        </h2>
+        {/* Right Side Line */}
+        <div className="flex-1 h-[1px] bg-slate-200 max-w-[40px] md:max-w-[150px]"></div>
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8 mt-5">
+      {/* Cards Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mt-5">
         {categories.map((cat, idx) => (
           <div
             key={idx}
@@ -65,7 +64,7 @@ export default function CategoryCards() {
 
             <Link
               href={cat.link}
-              className="group flex items-center justify-between w-full max-w-[180px] md:max-w-[200px] px-6 py-3 border border-gray-200 rounded-full text-[10px] md:text-xs font-bold text-gray-700 hover:bg-amber-700 hover:text-white hover:border-amber-700 transition-all duration-300"
+              className="group flex items-center justify-between w-full max-w-[180px] md:max-w-[220px] px-6 py-3 border border-gray-200 rounded-full text-[10px] md:text-xs font-bold text-gray-700 hover:bg-amber-700 hover:text-white hover:border-amber-700 transition-all duration-300"
             >
               <span>{cat.btnText}</span>
               <ChevronRight
@@ -76,16 +75,6 @@ export default function CategoryCards() {
           </div>
         ))}
       </div>
-
-      {/* Powered by Section */}
-      {/* <div className="mt-10 md:mt-16 flex flex-col items-center">
-         <div className="flex items-center gap-2 text-[8px] md:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold text-gray-400">
-            <span>Powered by</span>
-            <span className="text-amber-700 flex items-center gap-1">
-                <span className="italic font-serif capitalize tracking-normal text-xs md:text-sm">AAN</span>VENTURES
-            </span>
-         </div>
-      </div> */}
     </section>
   );
 }

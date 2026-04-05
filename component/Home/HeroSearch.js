@@ -134,7 +134,7 @@ export default function HeroSearch() {
           <button
             key={tab.name}
             onClick={() => setActiveTab(tab.name)}
-            className={`px-5 py-2 rounded-full text-[11px] font-black transition-all flex items-center gap-2 whitespace-nowrap border ${
+            className={`px-3 py-2 rounded-full text-[11px] font-black transition-all flex items-center gap-2 whitespace-nowrap border ${
               activeTab === tab.name
                 ? "bg-white text-slate-900 shadow-lg border-white"
                 : "bg-black/30 text-white border-transparent hover:bg-black/40"
@@ -229,7 +229,7 @@ export default function HeroSearch() {
 
             {showGuests && (
               <div className="absolute top-full left-0 lg:left-auto lg:right-0 mt-4 w-full sm:w-80 bg-white rounded-3xl shadow-2xl p-6 border border-slate-50 z-[1000] animate-in fade-in zoom-in duration-200">
-                <div className="space-y-6">
+                <div className="space-y-1">
                   <CounterRow label="Adults" sub="12+ Years" count={counts.adults} onDec={() => updateCount("adults", "dec")} onInc={() => updateCount("adults", "inc")} />
                   <CounterRow label="Children" sub="2-12 Years" count={counts.children} onDec={() => updateCount("children", "dec")} onInc={() => updateCount("children", "inc")} />
                   <CounterRow label="Infants" sub="Under 2 Years" count={counts.infants} onDec={() => updateCount("infants", "dec")} onInc={() => updateCount("infants", "inc")} />

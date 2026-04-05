@@ -38,7 +38,7 @@ export default function AboutUs() {
       </section>
 
       {/* 2. CONTENT SECTION */}
-      <main className="container mx-auto px-4 md:px-6 max-w-5xl  md:py-20">
+      <main className="container mx-auto px-4 md:px-6 max-w-5xl py-10  md:py-20">
         
         {/* Intro Header */}
         <div className="text-center mb-12 md:mb-16">
