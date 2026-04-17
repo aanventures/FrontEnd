@@ -92,14 +92,40 @@ export const updateBlogGalleryAction = createAsyncThunk(
   "blog/updateGallery",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${baseUrl}/api/blogs/${id}/gallery`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.patch(
+        `${baseUrl}/api/blogs/${id}/gallery`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
-  }
+  },
+);
+
+export const deleteBlogGalleryImageAction = createAsyncThunk(
+  "blog/deleteGalleryImage",
+  async ({ id, imageId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${baseUrl}/api/blogs/${id}/gallery/${imageId}`,
+        {
+          withCredentials: true,
+
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Error deleting image",
+      );
+    }
+  },
 );
 
 // In extraReducers, handle the loading state similar to updateBlogAction
@@ -207,20 +233,20 @@ const blogSlice = createSlice({
         state.blogs = state.blogs.filter((blog) => blog._id !== action.payload);
       })
 
-     .addCase(updateBlogGalleryAction.pending, (state) => {
+      .addCase(updateBlogGalleryAction.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateBlogGalleryAction.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        
+
         // Update the gallery in the blogs array list
-        const index = state.blogs.findIndex((b) => b._id === state.currentId); 
+        const index = state.blogs.findIndex((b) => b._id === state.currentId);
         // Note: You might need to pass ID or store it to find the index accurately
         if (index !== -1) {
           state.blogs[index].gallery = action.payload;
         }
-        
+
         // Update the single blog object if it's currently loaded
         if (state.blog) {
           state.blog.gallery = action.payload;
@@ -238,7 +264,9 @@ const blogSlice = createSlice({
       .addCase(updateBlogAction.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        const index = state.blogs.findIndex((b) => b._id === action.payload._id);
+        const index = state.blogs.findIndex(
+          (b) => b._id === action.payload._id,
+        );
         if (index !== -1) {
           state.blogs[index] = action.payload;
         }

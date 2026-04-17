@@ -1,0 +1,27 @@
+/* QuillEditor.css */
+
+.ql-container {
+  min-height: 250px;
+  font-size: 16px;
+}
+
+.ql-editor {
+  min-height: 250px;
+}
+
+.ql-toolbar.ql-snow {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.ql-container.ql-snow {
+  border: none;
+}
+
+/* ✅ Style for divider */
+.ql-editor hr {
+  border: none;
+  border-top: 2px solid #cbd5e1;
+  margin: 1.5rem 0;
+}
